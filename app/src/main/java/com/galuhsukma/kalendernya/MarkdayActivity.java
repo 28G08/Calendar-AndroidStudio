@@ -1,5 +1,7 @@
 package com.galuhsukma.kalendernya;
 
+import static com.galuhsukma.kalendernya.R.id.display_ChosenDay;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +19,7 @@ public class MarkdayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         chosenDay = intent.getStringExtra("chosenDay");
-        day = findViewById(R.id.display_ChosenDay);
+        day = findViewById();
         day.setText(chosenDay);
 
     }
