@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
 
@@ -72,7 +73,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     }
 
     private String monthYearFromDate(LocalDate date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("id", "ID"));
+        String formattedDate = selectedDate.format(formatter);
+        monthYearText.setText(formattedDate);
+
         return date.format(formatter);
     }
 
