@@ -5,4 +5,7 @@
     <color name="gray">#E2DAD6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="mayoicolor">#522F60</color>
+    <color name="yellow">#FFDC7F</color>
+
 </resources>
