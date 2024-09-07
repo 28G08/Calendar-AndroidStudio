@@ -1,17 +1,12 @@
 package com.galuhsukma.kalendernya;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     @Override
     public void onItemClick(int position, String dayText) {
         chosenDay = String.valueOf(dayText);
-        if (!dayText.equals("")){
+        if (!dayText.isEmpty()){
             String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
@@ -106,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     public void markday(View view) {
         Intent intent = new Intent(this, MarkdayActivity.class);
         intent.putExtra("chosenDay", chosenDay);
+        intent.putExtra("monthyear", monthYearFromDate(selectedDate));
         startActivity(intent);
     }
 }

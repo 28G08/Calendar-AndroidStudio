@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MarkdayActivity extends AppCompatActivity {
-    String chosenDay;
+    String chosenDay, chosenMonthYear;
     TextView day;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -17,8 +17,9 @@ public class MarkdayActivity extends AppCompatActivity {
         setContentView(R.layout.markday);
         Intent intent = getIntent();
         chosenDay = intent.getStringExtra("chosenDay");
+        chosenMonthYear = intent.getStringExtra("monthyear");
         day = findViewById(R.id.display_ChosenDay);
-        day.setText(chosenDay);
+        day.setText(chosenDay+" "+chosenMonthYear);
 
     }
 
