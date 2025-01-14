@@ -13,6 +13,13 @@
         android:theme="@style/Theme.Kalendernya"
         tools:targetApi="31">
         <activity
+            android:name=".Markday"
+            android:exported="false" />
+        <activity
+            android:name=".markday"
+            android:exported="false"
+            android:theme="@style/Theme.Kalendernya" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

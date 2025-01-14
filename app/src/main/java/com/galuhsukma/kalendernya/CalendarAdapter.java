@@ -1,5 +1,6 @@
 package com.galuhsukma.kalendernya;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList<String> daysOfMonth;
     private final OnItemListener onItemListener;
+
 
     public CalendarAdapter(ArrayList<String> daysOfMonth, OnItemListener onItemListener) {
         this.daysOfMonth = daysOfMonth;
