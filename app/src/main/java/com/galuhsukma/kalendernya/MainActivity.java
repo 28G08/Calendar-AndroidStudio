@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,7 +17,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
 
@@ -28,18 +28,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        // Set Locale to Indonesian
-        Locale.setDefault(new Locale("id", "ID"));
-        Configuration config = getBaseContext().getResources().getConfiguration();
-        config.setLocale(new Locale("id", "ID"));
-        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
-        // Set the content view and other initialization here
         setContentView(R.layout.activity_main);
         initWidgets();
         selectedDate = LocalDate.now();
         setMonthView();
-
     }
 
     private void initWidgets() {
@@ -94,27 +86,12 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         selectedDate = selectedDate.plusMonths(1);
         setMonthView();
     }
-    public void markdate(View view)
-    {
-        Intent intent = new Intent(this, Markday.class);
-        intent.putExtra("selected_date", selected_date);
-        intent.putExtra("selected_monthYear", monthYearFromDate(selectedDate));
-        startActivity(intent);
-    }
 
     @Override
     public void onItemClick(int position, String dayText) {
         if (!dayText.equals("")){
             String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            selected_date = dayText;
         }
-    }
-
-    public void markday(View view) {
-        Intent intent = new Intent(this, MarkdayActivity.class);
-        intent.putExtra("chosenDay", chosenDay);
-        intent.putExtra("monthyear", monthYearFromDate(selectedDate));
-        startActivity(intent);
     }
 }
