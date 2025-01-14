@@ -1,14 +1,14 @@
 package com.galuhsukma.kalendernya;
 
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
-    public String selected_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -80,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         return daysInMonthArray;
     }
 
-    public String monthYearFromDate(LocalDate date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("id", "ID"));
+    private String monthYearFromDate(LocalDate date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         return date.format(formatter);
     }
 
@@ -105,11 +104,17 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
     @Override
     public void onItemClick(int position, String dayText) {
-        //kasih perintah klik per day disini
-        if (!dayText.isEmpty()){
-            String message = "Selected Date "+ dayText + " " + monthYearFromDate(selectedDate);
+        if (!dayText.equals("")){
+            String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             selected_date = dayText;
         }
+    }
+
+    public void markday(View view) {
+        Intent intent = new Intent(this, MarkdayActivity.class);
+        intent.putExtra("chosenDay", chosenDay);
+        intent.putExtra("monthyear", monthYearFromDate(selectedDate));
+        startActivity(intent);
     }
 }
