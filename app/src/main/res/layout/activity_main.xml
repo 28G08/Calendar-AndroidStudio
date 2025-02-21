@@ -148,6 +148,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:id="@+id/nukun"
         android:layout_width="80dp"
         android:layout_height="50dp"
         android:layout_below="@+id/cardvw"
@@ -156,5 +157,29 @@
         android:onClick="markdate"
         android:text="Tandai"
         android:textSize="20sp" />
+    <Button
+        android:id="@+id/wawasan"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/nukun"
+        android:gravity="center"
+        android:text="WAWASAN"
+        android:textSize="20sp"/>
+    <Button
+        android:id="@+id/reminder"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/wawasan"
+        android:gravity="center"
+        android:text="REMINDER"
+        android:textSize="20sp"/>
+    <Button
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/reminder"
+        android:gravity="center"
+        android:text="TENTANG APLIKASI"
+        android:textSize="20sp"/>
 
 </RelativeLayout>

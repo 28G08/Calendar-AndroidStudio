@@ -13,6 +13,8 @@ import androidx.appcompat.view.menu.MenuView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
+
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public final TextView dayOfmonth;
@@ -22,8 +24,6 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
     public CalendarViewHolder(@NonNull View itemView, CalendarAdapter.OnItemListener onItemListener) {
         super(itemView);
         dayOfmonth = itemView.findViewById(R.id.cellDayText);
-        whiteColor = ContextCompat.getColor(itemView.getContext(), R.color.white);
-        blackColor = ContextCompat.getColor(itemView.getContext(), R.color.black);
         this.onItemListener = onItemListener;
         itemView.setOnClickListener(this);
     }
@@ -31,8 +31,6 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View view) {
         onItemListener.onItemClick(getAdapterPosition(), (String) dayOfmonth.getText());
-        dayOfmonth.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.pinkD));
-        dayOfmonth.setTextColor(whiteColor);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.galuhsukma.kalendernya;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -17,20 +19,25 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
+    String chosenDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initWidgets();
         selectedDate = LocalDate.now();
+        chosenDay = String.valueOf(selectedDate.getDayOfMonth());
+        initWidgets();
         setMonthView();
     }
 
@@ -38,11 +45,18 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
         monthYearText = findViewById(R.id.monthYearTV);
     }
+
     private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
+        //buat tanda hari ini
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_MONTH);
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this);
+        List<String> markedDates = new ArrayList<>();
+        markedDates.add(String.valueOf(today)); // Tandai tanggal hari ini
+
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, markedDates, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
@@ -72,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     }
 
     private String monthYearFromDate(LocalDate date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("id", "ID"));
+        String formattedDate = selectedDate.format(formatter);
+        monthYearText.setText(formattedDate);
         return date.format(formatter);
     }
 
@@ -89,9 +105,17 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
     @Override
     public void onItemClick(int position, String dayText) {
-        if (!dayText.equals("")){
+        chosenDay = String.valueOf(dayText);
+        if (!dayText.isEmpty()){
             String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void markday(View view) {
+        Intent intent = new Intent(this, Markday.class);
+        intent.putExtra("chosenDay", chosenDay);
+        intent.putExtra("monthyear", monthYearFromDate(selectedDate));
+        startActivity(intent);
     }
 }

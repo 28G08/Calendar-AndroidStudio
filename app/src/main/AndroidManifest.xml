@@ -13,14 +13,7 @@
         android:theme="@style/Theme.Kalendernya"
         tools:targetApi="31" >
         <activity
-            android:name=".MarkdayActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Kalendernya" />
-        <activity
             android:name=".Markday"
-            android:exported="false" />
-        <activity
-            android:name=".markday"
             android:exported="false"
             android:theme="@style/Theme.Kalendernya" />
         <activity

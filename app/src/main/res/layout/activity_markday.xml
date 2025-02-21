@@ -5,27 +5,224 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:paddingTop="30dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:background="@color/pinkL"
     tools:context=".Markday">
 
-    <Button
-        android:id="@+id/kembali"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:text="Kembali"
-        android:textSize="20sp"
-        android:onClick="kembali"/>
+        <Button
+            android:id="@+id/kembali"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="Kembali"
+            android:textSize="20sp"
+            android:paddingBottom="15dp"
+            android:onClick="kembali"/>
 
     <TextView
         android:id="@+id/dayselected"
         android:layout_below="@+id/kembali"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="26 Agustus 2024"
+        android:text="tanggal dipilih"
         android:textColor="@color/black"
         android:textSize="50sp"
         android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/pilihjenis"
+        android:layout_below="@+id/dayselected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TANDAI HARI SEBAGAI:"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"/>
+    <LinearLayout
+        android:id="@+id/jenis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/pilihjenis"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp">
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_margin="2dp">
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="HAID"
+                android:textSize="25dp"
+                android:padding="4dp"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_margin="2dp">
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="ISTIHADHAH"
+                android:textSize="25dp"
+                android:padding="4dp"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/pilihwaktu"
+        android:layout_below="@+id/jenis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="silahkan pilih waktu mulai haid"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"/>
 
+
+    <LinearLayout
+        android:id="@+id/qadhashalat1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pilihwaktu"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/subuh"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/subuh"
+                android:layout_margin="5dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/dhuhur"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/dhuhur"
+                android:layout_margin="5dp"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/ashar"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/ashar"
+                android:layout_margin="5dp"/>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/qadhashalat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/qadhashalat1">
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/maghrib"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/maghrib"
+                android:layout_margin="5dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/isha"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/isha"
+                android:layout_margin="5dp"/>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/centangqadha"
+        android:layout_below="@+id/qadhashalat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="centang jika benar"
+        android:textColor="@color/black"
+        android:paddingTop="10dp"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"/>
+    <LinearLayout
+        android:id="@+id/centang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingBottom="5dp"
+        android:layout_below="@+id/centangqadha">
+        <CheckBox
+            android:id="@+id/cekboxshalat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sudah sholat sebelum haid"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:padding="1dp"
+            android:layout_below="@+id/centang"/>
+        <CheckBox
+            android:id="@+id/cekboxpuasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hari ini hutang puasa bertambah"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:padding="1dp"
+            android:layout_below="@+id/cekboxshalat"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnsimpan"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="SIMPAN"
+        android:textSize="20dp"
+        android:layout_below="@+id/centang"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/btnhapus"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="HAPUS"
+        android:textSize="20dp"
+        android:layout_below="@+id/btnsimpan"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
