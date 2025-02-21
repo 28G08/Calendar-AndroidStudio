@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
-    String chosenDay;
+    String chosenDay, tgldatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         setContentView(R.layout.activity_main);
         selectedDate = LocalDate.now();
         chosenDay = String.valueOf(selectedDate.getDayOfMonth());
+        tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         initWidgets();
         setMonthView();
     }
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
+
         //buat tanda hari ini
         Calendar calendar = Calendar.getInstance();
         int today = calendar.get(Calendar.DAY_OF_MONTH);
@@ -91,7 +93,12 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         monthYearText.setText(formattedDate);
         return date.format(formatter);
     }
+    private String monthYearFromSelectedDate() {
+        int month = selectedDate.getMonthValue(); // Ambil angka bulan (1-12)
+        int year = selectedDate.getYear(); // Ambil tahun (YYYY)
 
+        return year + "-" + month; // Mengembalikan bulan dan tahun sebagai String
+    }
     public void previousMonthAction(View view)
     {
         selectedDate = selectedDate.minusMonths(1);
@@ -106,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     @Override
     public void onItemClick(int position, String dayText) {
         chosenDay = String.valueOf(dayText);
+        tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         if (!dayText.isEmpty()){
             String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -116,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         Intent intent = new Intent(this, Markday.class);
         intent.putExtra("chosenDay", chosenDay);
         intent.putExtra("monthyear", monthYearFromDate(selectedDate));
+        intent.putExtra("tgldatabase", tgldatabase);
         startActivity(intent);
     }
 }

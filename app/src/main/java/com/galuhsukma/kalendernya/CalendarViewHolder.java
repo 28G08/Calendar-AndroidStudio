@@ -18,7 +18,6 @@ import java.time.LocalDate;
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public final TextView dayOfmonth;
-    public int blackColor, whiteColor;
     private final CalendarAdapter.OnItemListener onItemListener;
 
     public CalendarViewHolder(@NonNull View itemView, CalendarAdapter.OnItemListener onItemListener) {
