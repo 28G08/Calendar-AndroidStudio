@@ -1,6 +1,10 @@
 package com.galuhsukma.kalendernya;
 
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_HAID;
+
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -24,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
-
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;

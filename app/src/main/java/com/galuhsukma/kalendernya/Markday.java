@@ -1,7 +1,13 @@
 package com.galuhsukma.kalendernya;
 
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_HAID;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_ISTIHADHAH;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
+
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,8 +26,8 @@ import java.util.jar.JarEntry;
 public class Markday extends AppCompatActivity {
     DatabaseHelper myDb;
     private TextView dayselected;
-    private String selected_date_string, selected_monthYear_string, tgl_database, jenismark, qadhashalat;
-    private int centangshalat, centangpuasa;
+    private String selected_date_string, selected_monthYear_string, tgl, jmark, qshalat;
+    private int cshalat, cpuasa;
     private CardView cvmhaid, cvmistihadhah, cvsubuh, cvdhuhur, cvashar, cvmaghrib, cvisha;
     private CheckBox cbshalat, cbpuasa;
     Button simpanbtn;
@@ -36,7 +42,7 @@ public class Markday extends AppCompatActivity {
         Intent intent = getIntent();
         selected_date_string = intent.getStringExtra("chosenDay");
         selected_monthYear_string = intent.getStringExtra("monthyear");
-        tgl_database = intent.getStringExtra("tgldatabase");
+        tgl = intent.getStringExtra("tgldatabase");
 
         dayselected = findViewById(R.id.dayselected);
         cvmhaid = findViewById(R.id.cvmarkhaid);
@@ -57,13 +63,13 @@ public class Markday extends AppCompatActivity {
         cvmhaid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                jenismark = "HAID";
+                jmark = "HAID";
             }
         });
         cvmistihadhah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                jenismark = "ISTIHADHAH";
+                jmark = "ISTIHADHAH";
             }
         });
 
@@ -71,54 +77,56 @@ public class Markday extends AppCompatActivity {
         cvsubuh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qadhashalat = "Shalat Subuh";
+                qshalat = "Shalat Subuh";
             }
         });
         cvdhuhur.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qadhashalat = "Shalat Dhuhur";
+                qshalat = "Shalat Dhuhur";
             }
         });
         cvashar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qadhashalat = "Shalat Ashar";
+                qshalat = "Shalat Ashar";
             }
         });
         cvmaghrib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qadhashalat = "Shalat Maghrib";
+                qshalat = "Shalat Maghrib";
             }
         });
         cvisha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qadhashalat = "Shalat Isha'";
+                qshalat = "Shalat Isha'";
             }
         });
-
-        //centangin sholat puasa
-        if (cbshalat.isChecked()) {
-            centangshalat = 1;
-        } else {
-            centangshalat = 0;
-        }
-
-        if (cbpuasa.isChecked()) {
-            centangpuasa = 1;
-        } else {
-            centangpuasa = 0;
-        }
-
 
         //tombol simpan data
         simpanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myDb.insertData(tgl_database, jenismark, qadhashalat, centangshalat, centangpuasa);
-                Toast.makeText(Markday.this,"Data Saved Successfully", Toast.LENGTH_SHORT).show();
+                // Ambil nilai checkbox saat tombol ditekan
+                cshalat = cbshalat.isChecked() ? 1 : 0;
+                cpuasa = cbpuasa.isChecked() ? 1 : 0;
+
+                // Cek apakah `tgl` dan `jmark` sudah dipilih
+                if (tgl == null || jmark == null || jmark.isEmpty()) {
+                    Toast.makeText(Markday.this, "Silakan pilih jenis mark terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Simpan data ke SQLite
+                long result = myDb.insertData(tgl, jmark, qshalat, cshalat, cpuasa);
+
+                if (result != -1) {
+                    Toast.makeText(Markday.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Markday.this, "Failed to Save Data", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -128,4 +136,34 @@ public class Markday extends AppCompatActivity {
         finish();
     }
 
+    public void debug(View view) {
+        Cursor cursor = myDb.getReadableDatabase().rawQuery("SELECT * FROM " + DB_TABLE_UTAMA, null);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String tanggal = cursor.getString(0);
+                String jenisMark = cursor.getString(1);
+                String Qshalat = cursor.getString(2);
+                Integer Rshalat = cursor.getInt(3);
+                Integer Rpuasa = cursor.getInt(4);
+                Log.d("Database Check", "Tanggal: " + tanggal + ", Jenis: " + jenisMark+ ", Qshalat: " + Qshalat+ ", sudah sholat: " + Rshalat+ ", nambah hutang puasa ga: " + Rpuasa);
+            }
+        } else {
+            Log.d("Database Check", "Tidak ada data di tabel.");
+        }
+        cursor.close();
+    }
+
+    public void debug2(View view) {
+        Cursor cursor = myDb.getReadableDatabase().rawQuery("SELECT * FROM " + DB_TABLE_ISTIHADHAH, null);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String tanggal = cursor.getString(0);
+                String jenisMark = cursor.getString(1);
+                Log.d("Database Check", "Tanggal: " + tanggal + ", Jenis: " + jenisMark);
+            }
+        } else {
+            Log.d("Database Check", "Tidak ada data di tabel.");
+        }
+        cursor.close();
+    }
 }

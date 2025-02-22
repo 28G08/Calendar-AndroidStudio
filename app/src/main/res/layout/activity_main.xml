@@ -141,29 +141,87 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Tandai Hari"
-                android:onClick="markday"/>
+                android:onClick="markday"
+                android:text="Tandai Hari" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/nukun"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+    <TextView
+        android:id="@+id/tvinfoqadha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/cardvw"
-        android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:onClick="markdate"
-        android:text="Tandai"
-        android:textSize="20sp" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="INFORMASI QADHA' SHALAT DAN PUASA"/>
+    <LinearLayout
+        android:id="@+id/infoqadhalabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvinfoqadha"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tvinfoshalat"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="QADHA' SHALAT"
+            android:textColor="@color/black"
+            android:layout_marginRight="10dp"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvinfopuasa"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="QADHA' PUASA"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/infoqadha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/infoqadhalabel"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:id="@+id/infoshalat"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:id="@+id/infopuasa"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="0 hari"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
     <Button
         android:id="@+id/wawasan"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/nukun"
+        android:layout_below="@+id/infoqadha"
         android:gravity="center"
         android:text="WAWASAN"
+        android:layout_marginTop="10dp"
         android:textSize="20sp"/>
     <Button
         android:id="@+id/reminder"

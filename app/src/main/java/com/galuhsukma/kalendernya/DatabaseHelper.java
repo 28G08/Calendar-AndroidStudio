@@ -23,11 +23,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "centangshalat INTEGER, " +
                     "centangpuasa INTEGER);";
     public static final String CREATE_TABLE_HAID = "CREATE TABLE " + DB_TABLE_HAID + " ("
-            + "id_tgl STRING PRIMARY KEY, "
+            + "id_tgl TEXT PRIMARY KEY, "
             + "jenismark TEXT NOT NULL CHECK(jenismark = 'HAID'))";
 
     public static final String CREATE_TABLE_ISTIHADHAH = "CREATE TABLE " + DB_TABLE_ISTIHADHAH + " ("
-            + "id_tgl STRING PRIMARY KEY, "
+            + "id_tgl TEXT PRIMARY KEY, "
             + "jenismark TEXT NOT NULL CHECK(jenismark = 'ISTIHADHAH'))";
     Context ctx;
     SQLiteDatabase myDB;
@@ -47,47 +47,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
-        String query = "drop table if exists "+DB_TABLE_UTAMA+"";
-        db.execSQL(query);
+        db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_UTAMA);
+        db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_HAID);
+        db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ISTIHADHAH);
+        onCreate(db); // Buat ulang tabel
     }
 
-    public Long insertData(String tgl, String jmark, String qshalat, int cshalat, int cpuasa){
-        myDB = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id_tgl", tgl);
-        values.put("jenismark", jmark);
-        values.put("waktusholat", qshalat);
-        values.put("centangshalat", cshalat);
-        values.put("centangpuasa", cpuasa);
+    public Long insertData(String tgl, String jmark, String qshalat, int cshalat, int cpuasa) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long rowId = -1;
 
-        //tabel utama
-        long rowId = myDB.insert(DB_TABLE_UTAMA, null, values);
+        try {
+            ContentValues values = new ContentValues();
+            values.put("id_tgl", tgl);
+            values.put("jenismark", jmark);
+            values.put("waktushalat", qshalat);
+            values.put("centangshalat", cshalat);
+            values.put("centangpuasa", cpuasa);
 
-        // Insert ke tabel HAID atau ISTIHADHAH jika sesuai
-        if ("HAID".equalsIgnoreCase(jmark)) {
-            ContentValues haidValues = new ContentValues();
-            haidValues.put("id_tgl", tgl);
-            haidValues.put("jenismark", jmark);
-            myDB.insert(DB_TABLE_HAID, null, haidValues);
-        } else if ("ISTIHADHAH".equalsIgnoreCase(jmark)) {
-            ContentValues istihadhahValues = new ContentValues();
-            istihadhahValues.put("id_tgl", tgl);
-            istihadhahValues.put("jenismark", jmark);
-            myDB.insert(DB_TABLE_ISTIHADHAH, null, istihadhahValues);
+            // Insert ke tabel utama
+            rowId = db.insert(DB_TABLE_UTAMA, null, values);
+
+            // Insert ke tabel HAID atau ISTIHADHAH jika sesuai
+            if ("HAID".equalsIgnoreCase(jmark)) {
+                ContentValues haidValues = new ContentValues();
+                haidValues.put("id_tgl", tgl);
+                haidValues.put("jenismark", jmark);
+                db.insert(DB_TABLE_HAID, null, haidValues);
+            } else if ("ISTIHADHAH".equalsIgnoreCase(jmark)) {
+                ContentValues istihadhahValues = new ContentValues();
+                istihadhahValues.put("id_tgl", tgl);
+                istihadhahValues.put("jenismark", jmark);
+                db.insert(DB_TABLE_ISTIHADHAH, null, istihadhahValues);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close(); // Tutup database setelah insert selesai
         }
 
         return rowId;
     }
 
+
     public void editDataEntry(String tgl, String jmark, String qshalat, int cshalat, int cpuasa){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id_tgl", tgl);
         values.put("jenismark", jmark);
-        values.put("waktusholat", qshalat);
+        values.put("waktushalat", qshalat);
         values.put("centangshalat", cshalat);
         values.put("centangpuasa", cpuasa);
 
-        myDB = getReadableDatabase();
-        myDB.update(DB_TABLE_UTAMA, values, "id_tgl="+tgl, null);
+        db.update(DB_TABLE_UTAMA, values, "id_tgl=?", new String[]{tgl});
+        db.close();
     }
 }
