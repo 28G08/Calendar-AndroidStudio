@@ -1,6 +1,6 @@
 package com.galuhsukma.kalendernya;
 
-import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_HAID;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_ISTIHADHAH;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
@@ -146,20 +146,6 @@ public class Markday extends AppCompatActivity {
                 Integer Rshalat = cursor.getInt(3);
                 Integer Rpuasa = cursor.getInt(4);
                 Log.d("Database Check", "Tanggal: " + tanggal + ", Jenis: " + jenisMark+ ", Qshalat: " + Qshalat+ ", sudah sholat: " + Rshalat+ ", nambah hutang puasa ga: " + Rpuasa);
-            }
-        } else {
-            Log.d("Database Check", "Tidak ada data di tabel.");
-        }
-        cursor.close();
-    }
-
-    public void debug2(View view) {
-        Cursor cursor = myDb.getReadableDatabase().rawQuery("SELECT * FROM " + DB_TABLE_ISTIHADHAH, null);
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String tanggal = cursor.getString(0);
-                String jenisMark = cursor.getString(1);
-                Log.d("Database Check", "Tanggal: " + tanggal + ", Jenis: " + jenisMark);
             }
         } else {
             Log.d("Database Check", "Tidak ada data di tabel.");

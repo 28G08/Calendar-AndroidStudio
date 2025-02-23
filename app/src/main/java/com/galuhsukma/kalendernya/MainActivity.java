@@ -1,11 +1,13 @@
 package com.galuhsukma.kalendernya;
 
-import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_HAID;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,43 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         initWidgets();
         setMonthView();
+        listtanda();
+    }
+
+    private void listtanda() {
+        // Misalnya, Anda sudah memiliki instance SQLiteDatabase (misalnya, dari SQLiteOpenHelper)
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+// Query untuk mengambil kolom tanggal dan jenis dari tabel (ganti "your_table_name" dengan nama tabel Anda)
+        String query = "SELECT id_tgl, jenismark FROM "+DB_TABLE_UTAMA;
+        Cursor cursor = db.rawQuery(query, null);
+
+// Inisialisasi dua list untuk masing-masing jenis
+        List<String> listHaid = new ArrayList<>();
+        List<String> listIstihadhah = new ArrayList<>();
+
+// Iterasi cursor untuk mengambil data
+        if (cursor.moveToFirst()) {
+            do {
+                // Ambil nilai tanggal dan jenis
+                String tanggal = cursor.getString(cursor.getColumnIndex("id_tgl"));
+                String jenis = cursor.getString(cursor.getColumnIndex("jenismark"));
+
+                // Kelompokkan data berdasarkan jenis
+                if ("haid".equalsIgnoreCase(jenis)) {
+                    listHaid.add(tanggal);
+                } else if ("istihadhah".equalsIgnoreCase(jenis)) {
+                    listIstihadhah.add(tanggal);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Tampilkan isi list di Logcat
+        Log.d("Database", "List Haid: " + listHaid.toString());
+        Log.d("Database", "List Istihadhah: " + listIstihadhah.toString());
+
     }
 
     private void initWidgets() {
@@ -55,13 +94,11 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
 
         //buat tanda hari ini
-        Calendar calendar = Calendar.getInstance();
-        int today = calendar.get(Calendar.DAY_OF_MONTH);
-
         List<String> markedDates = new ArrayList<>();
-        markedDates.add(String.valueOf(today)); // Tandai tanggal hari ini
+        markedDates.add(selectedDate.toString());
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, markedDates, this);
+        String currentMonthYear = monthYearFromSelectedDate();
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, markedDates, this, currentMonthYear);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);

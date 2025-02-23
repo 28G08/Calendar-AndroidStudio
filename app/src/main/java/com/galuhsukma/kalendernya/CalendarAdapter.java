@@ -20,11 +20,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private List<String> markedDates;
     private final OnItemListener onItemListener;
     private int selectedPosition = -1; // -1 artinya belum ada yang dipilih
+    private String currentMonthYear; // Format: "yyyy-MM"
 
-    public CalendarAdapter(ArrayList<String> daysOfMonth, List<String> markedDates, OnItemListener onItemListener) {
+    public CalendarAdapter(ArrayList<String> daysOfMonth, List<String> markedDates, OnItemListener onItemListener, String currentMonthYear) {
         this.daysOfMonth = daysOfMonth;
         this.markedDates = markedDates;
         this.onItemListener = onItemListener;
+        this.currentMonthYear = currentMonthYear;
     }
 
     @NonNull
@@ -56,6 +58,38 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
             holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
             holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
+        holder.itemView.setOnClickListener(v -> {
+            selectedPosition = position;
+            notifyDataSetChanged();
+            if (onItemListener != null) {
+                onItemListener.onItemClick(position, dayText);
+            }
+        });
+        if (!dayText.isEmpty()) {
+            // Pastikan dayText selalu dua digit (misalnya "07" jika kurang dari 10)
+            String formattedDay = dayText.length() == 1 ? "0" + dayText : dayText;
+            // Misalnya currentMonthYear sudah dalam format "yyyy-MM"
+            String fullDate = currentMonthYear + "-" + formattedDay; // hasil: "yyyy-MM-dd"
+
+            if (markedDates.contains(fullDate)) {
+                // Warnai sebagai penanda (misalnya kuning)
+                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));
+            } else if (position == selectedPosition) {
+                // 🔹 Jika tanggal dipilih, warnai pinkD (terlepas dari markedDates atau tidak)
+                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.pinkD));
+                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));}
+            else {
+                // Tampilan default
+                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
+            }
+        } else {
+            // Sel kosong, misalnya tidak ada angka
+            holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+            holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
+        }
+
         holder.itemView.setOnClickListener(v -> {
             selectedPosition = position;
             notifyDataSetChanged();
