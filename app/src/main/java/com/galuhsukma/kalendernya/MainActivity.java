@@ -45,10 +45,15 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         initWidgets();
         setMonthView();
-        listtanda();
+        Log.d("ini isi tgldatabase", "tanggal yang diambil"+tgldatabase);
     }
 
-    private void listtanda() {
+    private void initWidgets() {
+        calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
+        monthYearText = findViewById(R.id.monthYearTV);
+    }
+
+    private void setMonthView() {
         // Misalnya, Anda sudah memiliki instance SQLiteDatabase (misalnya, dari SQLiteOpenHelper)
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -82,23 +87,11 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         Log.d("Database", "List Haid: " + listHaid.toString());
         Log.d("Database", "List Istihadhah: " + listIstihadhah.toString());
 
-    }
-
-    private void initWidgets() {
-        calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
-        monthYearText = findViewById(R.id.monthYearTV);
-    }
-
-    private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
 
-        //buat tanda hari ini
-        List<String> markedDates = new ArrayList<>();
-        markedDates.add(selectedDate.toString());
-
         String currentMonthYear = monthYearFromSelectedDate();
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, markedDates, this, currentMonthYear);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, listHaid, listIstihadhah, this, currentMonthYear);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
@@ -121,7 +114,9 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
             }
             else
             {
-             daysInMonthArray.add(String.valueOf(i - dayOfWeek));
+                int dayOfMonth = i - dayOfWeek;
+                LocalDate dateForCell = selectedDate.withDayOfMonth(dayOfMonth);
+                daysInMonthArray.add(dateForCell.toString());
             }
         }
         return daysInMonthArray;
@@ -134,10 +129,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         return date.format(formatter);
     }
     private String monthYearFromSelectedDate() {
-        int month = selectedDate.getMonthValue(); // Ambil angka bulan (1-12)
-        int year = selectedDate.getYear(); // Ambil tahun (YYYY)
-
-        return year + "-" + month; // Mengembalikan bulan dan tahun sebagai String
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        return selectedDate.format(formatter);
     }
     public void previousMonthAction(View view)
     {
@@ -152,10 +145,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
     @Override
     public void onItemClick(int position, String dayText) {
-        chosenDay = String.valueOf(dayText);
+        chosenDay = dayText.substring(dayText.lastIndexOf("-") + 1);
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         if (!dayText.isEmpty()){
-            String message = "Selected Date "+ dayText+ " " + monthYearFromDate(selectedDate);
+            String message = "Selected Date "+ dayText;
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }

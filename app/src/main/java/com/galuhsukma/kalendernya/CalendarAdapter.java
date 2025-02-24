@@ -17,14 +17,15 @@ import java.util.List;
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList<String> daysOfMonth;
 
-    private List<String> markedDates;
+    private List<String> listHaid, listIstihadhah;
     private final OnItemListener onItemListener;
     private int selectedPosition = -1; // -1 artinya belum ada yang dipilih
     private String currentMonthYear; // Format: "yyyy-MM"
 
-    public CalendarAdapter(ArrayList<String> daysOfMonth, List<String> markedDates, OnItemListener onItemListener, String currentMonthYear) {
+    public CalendarAdapter(ArrayList<String> daysOfMonth, List<String> listHaid, List<String> listIstihadhah, OnItemListener onItemListener, String currentMonthYear) {
         this.daysOfMonth = daysOfMonth;
-        this.markedDates = markedDates;
+        this.listHaid = listHaid;
+        this.listIstihadhah = listIstihadhah;
         this.onItemListener = onItemListener;
         this.currentMonthYear = currentMonthYear;
     }
@@ -42,52 +43,38 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
         String dayText = daysOfMonth.get(position);
-        holder.dayOfmonth.setText(dayText);
         Context context = holder.itemView.getContext();
+        LocalDate hariIni = LocalDate.now();
+        String today = hariIni.toString();
 
-        if (position == selectedPosition) {
-            // 🔹 Jika tanggal dipilih, warnai pinkD (terlepas dari markedDates atau tidak)
-            holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.pinkD));
-            holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));
-        } else if (markedDates.contains(dayText)) {
-            // 🔹 Jika tanggal ada di markedDates tapi tidak dipilih, warnai kuning
-            holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-            holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));
-        } else {
-            // 🔹 Tampilan default (tidak dipilih & tidak ditandai)
-            holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
-            holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
-        }
-        holder.itemView.setOnClickListener(v -> {
-            selectedPosition = position;
-            notifyDataSetChanged();
-            if (onItemListener != null) {
-                onItemListener.onItemClick(position, dayText);
-            }
-        });
         if (!dayText.isEmpty()) {
-            // Pastikan dayText selalu dua digit (misalnya "07" jika kurang dari 10)
-            String formattedDay = dayText.length() == 1 ? "0" + dayText : dayText;
-            // Misalnya currentMonthYear sudah dalam format "yyyy-MM"
-            String fullDate = currentMonthYear + "-" + formattedDay; // hasil: "yyyy-MM-dd"
-
-            if (markedDates.contains(fullDate)) {
+            String day = dayText;
+            // Ambil bagian hari saja, yaitu setelah karakter "-"
+            String visibleDay = day.substring(day.lastIndexOf("-") + 1);
+            holder.dayOfmonthDisplay.setText(visibleDay);
+            holder.dayOfmonth.setText(day);
+            if (position == selectedPosition) {
                 // Warnai sebagai penanda (misalnya kuning)
-                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));
-            } else if (position == selectedPosition) {
-                // 🔹 Jika tanggal dipilih, warnai pinkD (terlepas dari markedDates atau tidak)
-                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, R.color.pinkD));
-                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.white));}
-            else {
+                holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, R.color.pinkD));
+                holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.white));
+            } else if(today.equals(dayText)){
+                holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.white));}
+            else if(listHaid.contains(dayText)){
+                holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, R.color.greenL));
+                holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.white));}
+             else {
                 // Tampilan default
-                holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
-                holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
+                holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.black));
             }
         } else {
             // Sel kosong, misalnya tidak ada angka
-            holder.dayOfmonth.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
-            holder.dayOfmonth.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.dayOfmonthDisplay.setText("");
+            holder.dayOfmonth.setText("");
+            //kasih if else kalo dipencet nanti gaada apa/ atau nanti ada toastnya "pilih tanggal", kalo ga waktu dia mau klik tandai, kalo nilainya gaada, keluar toast
+            holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+            holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
 
         holder.itemView.setOnClickListener(v -> {
