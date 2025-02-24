@@ -63,7 +63,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
             else if(listHaid.contains(dayText)){
                 holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, R.color.greenL));
                 holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.white));}
-             else {
+            else if(listIstihadhah.contains(dayText)){
+                holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, R.color.black));
+                holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.white));
+            }else {
                 // Tampilan default
                 holder.dayOfmonthDisplay.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 holder.dayOfmonthDisplay.setTextColor(ContextCompat.getColor(context, R.color.black));
