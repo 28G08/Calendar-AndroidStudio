@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
     String chosenDay, tgldatabase;
+    TextView infoqshalat;
+    DatabaseHelper db;
+    SQLiteDatabase sqLiteDatabase;
+    String displayokqshalat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,10 +51,16 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         setMonthView();
         Log.d("ini isi tgldatabase", "tanggal yang diambil"+tgldatabase);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setMonthView();
+    }
 
     private void initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
         monthYearText = findViewById(R.id.monthYearTV);
+        infoqshalat = findViewById(R.id.infoshalat);
     }
 
     private void setMonthView() {
@@ -59,7 +69,16 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
 // Query untuk mengambil kolom tanggal dan jenis dari tabel (ganti "your_table_name" dengan nama tabel Anda)
+        String query2 = "SELECT waktushalat FROM "+DB_TABLE_UTAMA+" where display = 1;";
         String query = "SELECT id_tgl, jenismark FROM "+DB_TABLE_UTAMA;
+
+        Cursor cursor2 = db.rawQuery(query2, null);
+        if (cursor2.moveToFirst()) {
+            displayokqshalat = cursor2.getString(cursor2.getColumnIndex("waktushalat"));
+        }
+        infoqshalat.setText(displayokqshalat);
+        cursor2.close();
+
         Cursor cursor = db.rawQuery(query, null);
 
 // Inisialisasi dua list untuk masing-masing jenis

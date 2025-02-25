@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/markday"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:background="@color/pinkL"
+    tools:context=".Reminder">
+
+    <Button
+        android:id="@+id/kembali"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kembali"
+        android:paddingBottom="15dp"
+        android:layout_marginTop="30dp"
+        android:onClick="kembali"/>
+    <LinearLayout
+        android:id="@+id/konteninfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/kembali"
+        android:gravity="center_horizontal">
+        <TextView
+            android:id="@+id/infoqshalat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Qadha' Shalat anda saat ini adalah:"
+            android:layout_centerHorizontal="true"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvinfoshalat"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/qshalatinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tidak Ada"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/btneditshalat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear info Shalat"/>
+        <TextView
+            android:id="@+id/infoqpuasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sisa Hutang Puasa anda saat ini adalah:"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvinfopuasa"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/qpuasainfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tidak Ada"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/btneditpuasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Info Puasa"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/remindersection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/konteninfo"
+        android:layout_above="@+id/btntambah"
+        android:layout_marginTop="30dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reminderRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btntambah"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Tambah Reminder"/>
+
+</RelativeLayout>

@@ -14,14 +14,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_TABLE_UTAMA = "AllMarkDay";
     public static final String DB_TABLE_PUASA = "AkumulasiHutangPuasa";
     public static final String DB_TABLE_ISTIHADHAH = "IstihadhahTable";
-    public static final int DB_VER = 2;
+    public static final int DB_VER = 5;
     public static final String CREATE_TABLE_UTAMA =
             "CREATE TABLE " + DB_TABLE_UTAMA + " (" +
                     "id_tgl TEXT PRIMARY KEY, " +
                     "jenismark TEXT, " +
                     "waktushalat TEXT, " +
                     "centangshalat INTEGER, " +
-                    "centangpuasa INTEGER);";
+                    "centangpuasa INTEGER, " +
+                    "display INTEGER);";
     public static final String CREATE_TABLE_PUASA = "CREATE TABLE " + DB_TABLE_PUASA + " ("
             + "sumber TEXT PRIMARY KEY, "
             + "haripuasa INTEGER);";
@@ -52,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db); // Buat ulang tabel
     }
 
-    public Long insertData(String tgl, String jmark, String qshalat, int cshalat, int cpuasa) {
+    public Long insertData(String tgl, String jmark, String qshalat, int cshalat, int cpuasa, int qdisplay) {
         SQLiteDatabase db = this.getWritableDatabase();
         long rowId = -1;
 
@@ -63,6 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("waktushalat", qshalat);
             values.put("centangshalat", cshalat);
             values.put("centangpuasa", cpuasa);
+            values.put("display", qdisplay);
 
             // Insert ke tabel utama
             rowId = db.insert(DB_TABLE_UTAMA, null, values);
@@ -76,17 +78,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowId;
     }
 
-
-    public void editDataEntry(String tgl, String jmark, String qshalat, int cshalat, int cpuasa){
+    public int updateData(String id_tgl, String jenismark, String waktushalat, int centangshalat, int centangpuasa, int qdisplay) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id_tgl", tgl);
-        values.put("jenismark", jmark);
-        values.put("waktushalat", qshalat);
-        values.put("centangshalat", cshalat);
-        values.put("centangpuasa", cpuasa);
+        ContentValues cv = new ContentValues();
+        cv.put("jenismark", jenismark);
+        cv.put("waktushalat", waktushalat);
+        cv.put("centangshalat", centangshalat);
+        cv.put("centangpuasa", centangpuasa);
+        cv.put("display", qdisplay);
 
-        db.update(DB_TABLE_UTAMA, values, "id_tgl=?", new String[]{tgl});
-        db.close();
+        // update record yang memiliki id_tgl yang sesuai
+        return db.update(DB_TABLE_UTAMA, cv, "id_tgl = ?", new String[]{id_tgl});
+    }
+
+    public int deleteData(String id_tgl) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Menghapus data berdasarkan id_tgl
+        return db.delete(DB_TABLE_UTAMA, "id_tgl = ?", new String[]{id_tgl});
     }
 }
