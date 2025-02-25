@@ -230,6 +230,7 @@
         android:layout_below="@+id/wawasan"
         android:gravity="center"
         android:text="REMINDER"
+        android:onClick="reminder"
         android:textSize="20sp"/>
     <Button
         android:id="@+id/info"

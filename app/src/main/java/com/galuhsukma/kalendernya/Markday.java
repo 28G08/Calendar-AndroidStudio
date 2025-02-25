@@ -1,7 +1,7 @@
 package com.galuhsukma.kalendernya;
 
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
-import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_ISTIHADHAH;
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_REMINDER;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
 import android.content.ContentValues;

@@ -47,7 +47,8 @@
             android:id="@+id/btneditshalat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear info Shalat"/>
+            android:text="Clear info Shalat"
+            android:onClick="clearshalat"/>
         <TextView
             android:id="@+id/infoqpuasa"
             android:layout_width="wrap_content"
@@ -93,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Tambah Reminder"/>
+        android:text="Tambah Reminder"
+        android:onClick="tambahreminderbtn"/>
 
 </RelativeLayout>

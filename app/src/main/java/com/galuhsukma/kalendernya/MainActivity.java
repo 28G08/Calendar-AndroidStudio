@@ -1,6 +1,5 @@
 package com.galuhsukma.kalendernya;
 
-import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
 import android.content.Intent;
@@ -12,22 +11,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
     private TextView monthYearText;
@@ -38,12 +34,20 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     DatabaseHelper db;
     SQLiteDatabase sqLiteDatabase;
     String displayokqshalat;
+    private ReminderDatabase database;
+    private ReminderDao reminderDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        database = ReminderDatabase.getDatabase(this);
+        reminderDao = database.reminderDao();
+
+        scheduleReminder();
+        
         selectedDate = LocalDate.now();
         chosenDay = String.valueOf(selectedDate.getDayOfMonth());
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
@@ -51,6 +55,29 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         setMonthView();
         Log.d("ini isi tgldatabase", "tanggal yang diambil"+tgldatabase);
     }
+
+    private void scheduleReminder() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            long currentTime = System.currentTimeMillis();
+            ReminderEntity nextReminder = reminderDao.getNextReminder(currentTime);
+
+            if (nextReminder != null) {
+                long delay = nextReminder.timestamp - currentTime;
+
+                WorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
+                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                        .setInputData(new Data.Builder()
+                                .putString("title", nextReminder.title)
+                                .putString("message", nextReminder.message)
+                                .build())
+                        .build();
+
+                WorkManager.getInstance(getApplicationContext()).enqueue(workRequest);
+                Log.d("Reminder", "Reminder scheduled in " + delay + "ms");
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -64,21 +91,25 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     }
 
     private void setMonthView() {
-        // Misalnya, Anda sudah memiliki instance SQLiteDatabase (misalnya, dari SQLiteOpenHelper)
+        infoqshalat.setText("Tidak Ada");
+        // Dapatkan instance database
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-// Query untuk mengambil kolom tanggal dan jenis dari tabel (ganti "your_table_name" dengan nama tabel Anda)
-        String query2 = "SELECT waktushalat FROM "+DB_TABLE_UTAMA+" where display = 1;";
-        String query = "SELECT id_tgl, jenismark FROM "+DB_TABLE_UTAMA;
-
+// Query untuk mengambil data dengan kondisi display = 1
+        String query2 = "SELECT waktushalat FROM " + DB_TABLE_UTAMA + " WHERE display = 1;";
         Cursor cursor2 = db.rawQuery(query2, null);
+
+// Jika ada data, update infoqshalat
         if (cursor2.moveToFirst()) {
-            displayokqshalat = cursor2.getString(cursor2.getColumnIndex("waktushalat"));
+            String waktushalat = cursor2.getString(cursor2.getColumnIndex("waktushalat"));
+            if (waktushalat != null && !waktushalat.isEmpty()) {
+                infoqshalat.setText(waktushalat);
+            }
         }
-        infoqshalat.setText(displayokqshalat);
         cursor2.close();
 
+        String query = "SELECT id_tgl, jenismark FROM "+DB_TABLE_UTAMA;
         Cursor cursor = db.rawQuery(query, null);
 
 // Inisialisasi dua list untuk masing-masing jenis
@@ -177,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         intent.putExtra("chosenDay", chosenDay);
         intent.putExtra("monthyear", monthYearFromDate(selectedDate));
         intent.putExtra("tgldatabase", tgldatabase);
+        startActivity(intent);
+    }
+
+    public void reminder(View view) {
+        Intent intent = new Intent(this, Reminder.class);
         startActivity(intent);
     }
 }

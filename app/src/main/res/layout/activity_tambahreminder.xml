@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/markday"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:background="@color/pinkL"
+    tools:context=".TambahReminder">
+
+    <Button
+        android:id="@+id/kembali"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kembali"
+        android:paddingBottom="15dp"
+        android:layout_marginTop="30dp"
+        android:onClick="kembali"/>
+
+    <TextView
+        android:id="@+id/pilihjenisreminder"
+        android:layout_below="@+id/kembali"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jenis Reminder:"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:id="@+id/jenisreminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/pilihjenisreminder"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvrpuasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/jenisrpuasa"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="QADHA' PUASA"
+                android:textColor="@color/black" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvrshalat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/white">
+            <TextView
+                android:id="@+id/jenisrshalat"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="QADHA' SHALAT"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tanggal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/jenisreminder"
+        android:text="Pilih Tanggal"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"/>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvcalenderview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tanggal"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="30dp">
+        <CalendarView
+            android:id="@+id/kalenderreminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/white"/>
+    </androidx.cardview.widget.CardView>
+    <Button
+        android:id="@+id/btnsimpanreminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan Reminder"
+        android:layout_below="@+id/cvcalenderview"
+        android:layout_centerHorizontal="true"
+        android:onClick="simpanreminder"/>
+
+
+</RelativeLayout>
