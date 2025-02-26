@@ -2,7 +2,10 @@ package com.galuhsukma.kalendernya;
 
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class Reminder extends AppCompatActivity {
@@ -45,6 +49,26 @@ public class Reminder extends AppCompatActivity {
 
         reminderAdapter = new ReminderAdapter(this, modelReminderList);
         recyclerView.setAdapter(reminderAdapter);
+
+        scheduleDailyReminder(this);
+    }
+
+    private void scheduleDailyReminder(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Atur alarm setiap hari jam 07:00 pagi
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        // Set alarm berulang setiap hari
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
     }
 
     private void ambildatabase() {

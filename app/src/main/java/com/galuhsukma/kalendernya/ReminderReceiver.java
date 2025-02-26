@@ -3,6 +3,7 @@ package com.galuhsukma.kalendernya;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,25 +11,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ReminderWorker extends Worker {
+public class ReminderReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "ReminderChannel";
 
-    public ReminderWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-    }
-
     @Override
-    public Result doWork() {
-        Log.d("ReminderWorker", "doWork() called!");
-        Context context = getApplicationContext();
+    public void onReceive(Context context, Intent intent) {
+        Log.d("ReminderReceiver", "ReminderReceiver triggered!");
         DatabaseHelper myDb = new DatabaseHelper(context);
         SQLiteDatabase db = myDb.getReadableDatabase();
 
@@ -41,54 +34,45 @@ public class ReminderWorker extends Worker {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     String jenisReminder = cursor.getString(cursor.getColumnIndexOrThrow("jenisreminder"));
-                    Log.d("ReminderWorker", "Found reminder: " + jenisReminder);
+                    Log.d("ReminderReceiver", "Found reminder: " + jenisReminder);
                     showNotification(context, todayDate, jenisReminder);
                 } while (cursor.moveToNext());
             } else {
-                Log.d("ReminderWorker", "No reminders found for today.");
+                Log.d("ReminderReceiver", "No reminders found for today.");
             }
         } catch (Exception e) {
-            Log.e("ReminderWorker", "Error reading database", e);
+            Log.e("ReminderReceiver", "Error reading database", e);
         } finally {
             if (cursor != null) cursor.close();
             db.close(); // **WAJIB Ditutup**
         }
-
-        return Result.success();
     }
 
 
 
     private void showNotification(Context context, String date, String jenisReminder) {
-        Log.d("ReminderWorker", "showNotification() dipanggil untuk: " + jenisReminder + " pada " + date);
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        // Buat Notification Channel untuk Android 8.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Reminder Notifications", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Debugging PendingIntent
+        // Intent untuk membuka aplikasi saat notifikasi diklik
         Intent intent = new Intent(context, Reminder.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        if (pendingIntent == null) {
-            Log.e("ReminderWorker", "PendingIntent gagal dibuat!");
-        } else {
-            Log.d("ReminderWorker", "PendingIntent berhasil dibuat!");
-        }
-
+        // Bangun notifikasi
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.mayoi) // Pastikan ikon ini ada
+                .setSmallIcon(R.drawable.mayoi) // Ganti dengan ikon notifikasi
                 .setContentTitle("Reminder: " + jenisReminder)
                 .setContentText("Jadwal untuk " + date)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
+        // Tampilkan notifikasi
         notificationManager.notify(date.hashCode(), builder.build());
-        Log.d("ReminderWorker", "Notifikasi dikirim untuk: " + jenisReminder + " pada " + date);
     }
-
 }

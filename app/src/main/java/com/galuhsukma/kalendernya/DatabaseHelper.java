@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_TABLE_UTAMA = "AllMarkDay";
     public static final String DB_TABLE_PUASA = "AkumulasiHutangPuasa";
     public static final String DB_TABLE_REMINDER = "REMINDERQADHA";
-    public static final int DB_VER = 6;
+    public static final int DB_VER = 7;
     public static final String CREATE_TABLE_UTAMA =
             "CREATE TABLE " + DB_TABLE_UTAMA + " (" +
                     "id_tgl TEXT PRIMARY KEY, " +
@@ -100,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Menghapus data berdasarkan id_tgl
         return db.delete(DB_TABLE_UTAMA, "id_tgl = ?", new String[]{id_tgl});
     }
-    public Long insertDataReminder(String idtgl, String jenisreminder) {
+    public Long insertDataReminder(String idtgl, String jenisreminder, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
         long rowId = -1;
 
@@ -109,17 +111,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("tgl", idtgl);
             values.put("jenisreminder", jenisreminder);
 
-            // Insert ke tabel utama
-            rowId = db.insert(DB_TABLE_REMINDER, null, values);
+            // **Perbaikan di sini**
+            rowId = db.insert(DB_TABLE_REMINDER, null, values); // <-- Sekarang rowId berisi hasil insert
 
+            if (rowId != -1) { // <-- Sekarang bisa dicek dengan benar
+                Log.d("DatabaseHelper", "Reminder berhasil disimpan: " + idtgl + " - " + jenisreminder);
+
+                // Jalankan WorkManager langsung
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class).build();
+                WorkManager.getInstance(context).enqueue(workRequest);
+            } else {
+                Log.e("DatabaseHelper", "Gagal menyimpan reminder: " + idtgl + " - " + jenisreminder);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.close(); // Tutup database setelah insert selesai
+            db.close(); // **Tutup database setelah insert selesai**
         }
 
         return rowId;
     }
+
 
     public List<ModelReminder> getAllReminders() {
         List<ModelReminder> modelReminderList = new ArrayList<>();
@@ -138,15 +150,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return modelReminderList;
     }
-    public int updateDataReminder(String idtgl, String jenisreminder) {
+    public int updateDataReminder(String idtgl, String jenisreminder, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("tgl", idtgl);
-        cv.put("jenisreminder", jenisreminder);
+        int rowsUpdated = 0;
 
-        // update record yang memiliki id_tgl yang sesuai
-        return db.update(DB_TABLE_REMINDER, cv, "tgl = ?", new String[]{idtgl});
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put("tgl", idtgl);
+            cv.put("jenisreminder", jenisreminder);
+
+            rowsUpdated = db.update(DB_TABLE_REMINDER, cv, "tgl = ?", new String[]{idtgl});
+
+            if (rowsUpdated > 0) {
+                Log.d("DatabaseHelper", "Reminder berhasil diperbarui: " + idtgl + " - " + jenisreminder);
+
+                // Jalankan WorkManager langsung setelah update berhasil
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class).build();
+                WorkManager.getInstance(context).enqueue(workRequest);
+            } else {
+                Log.e("DatabaseHelper", "Gagal memperbarui reminder: " + idtgl + " - " + jenisreminder);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close(); // **Tutup database setelah update selesai**
+        }
+
+        return rowsUpdated;
     }
+
 
     public void deleteReminder(String tanggal) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -2,9 +2,14 @@ package com.galuhsukma.kalendernya;
 
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,18 +17,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.*;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import java.util.concurrent.TimeUnit;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
     private TextView monthYearText;
@@ -34,48 +42,34 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     DatabaseHelper db;
     SQLiteDatabase sqLiteDatabase;
     String displayokqshalat;
-    private ReminderDatabase database;
-    private ReminderDao reminderDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
 
-        database = ReminderDatabase.getDatabase(this);
-        reminderDao = database.reminderDao();
 
-        scheduleReminder();
-        
         selectedDate = LocalDate.now();
         chosenDay = String.valueOf(selectedDate.getDayOfMonth());
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
         initWidgets();
         setMonthView();
         Log.d("ini isi tgldatabase", "tanggal yang diambil"+tgldatabase);
+
+        Log.d("MainActivity", "App started, scheduling WorkManager...");
+        schedulePeriodicWork(); // **Gunakan WorkManager SAJA**
     }
 
-    private void scheduleReminder() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            long currentTime = System.currentTimeMillis();
-            ReminderEntity nextReminder = reminderDao.getNextReminder(currentTime);
-
-            if (nextReminder != null) {
-                long delay = nextReminder.timestamp - currentTime;
-
-                WorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
-                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                        .setInputData(new Data.Builder()
-                                .putString("title", nextReminder.title)
-                                .putString("message", nextReminder.message)
-                                .build())
-                        .build();
-
-                WorkManager.getInstance(getApplicationContext()).enqueue(workRequest);
-                Log.d("Reminder", "Reminder scheduled in " + delay + "ms");
-            }
-        });
+    private void schedulePeriodicWork() {
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(ReminderWorker.class, 15, TimeUnit.MINUTES)
+                .build();
+        WorkManager.getInstance(this).enqueue(workRequest);
     }
 
     @Override

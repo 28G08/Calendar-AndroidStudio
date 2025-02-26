@@ -2,6 +2,7 @@ package com.galuhsukma.kalendernya;
 
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_REMINDER;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -120,18 +121,22 @@ public class TambahReminder extends AppCompatActivity {
         }
 
         try {
-            // Simpan data ke SQLite
-            int result = myDb.updateDataReminder(idtgl, jenisreminder);
+            // Coba update data dulu
+            int result = myDb.updateDataReminder(idtgl, jenisreminder, getApplicationContext());
 
             if (result > 0) {
                 Toast.makeText(this, "Data diperbarui", Toast.LENGTH_SHORT).show();
+                Log.d("DatabaseHelper", "Reminder diperbarui: " + idtgl + " - " + jenisreminder);
             } else {
                 // Jika update gagal (misalnya record tidak ada), lakukan insert
-                long insertResult = myDb.insertDataReminder(idtgl, jenisreminder);
+                long insertResult = myDb.insertDataReminder(idtgl, jenisreminder, getApplicationContext());
+
                 if (insertResult != -1) {
                     Toast.makeText(this, "Data berhasil disimpan", Toast.LENGTH_SHORT).show();
+                    Log.d("DatabaseHelper", "Reminder berhasil disimpan: " + idtgl + " - " + jenisreminder);
                 } else {
-                    Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show();
+                    Log.e("DatabaseHelper", "Insert reminder gagal!");
                 }
             }
         } catch (Exception e) {
@@ -144,6 +149,7 @@ public class TambahReminder extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     @Override
     protected void onResume() {
         super.onResume();

@@ -36,11 +36,9 @@ android {
 
 dependencies {
 
-    implementation ("androidx.work:work-runtime-ktx:2.7.1")
+    implementation ("androidx.work:work-runtime:2.8.1")
     implementation ("androidx.core:core-ktx:1.9.0")
     implementation ("com.google.android.material:material:1.7.0")
-    implementation ("androidx.room:room-runtime:2.6.1")
-    annotationProcessor ("androidx.room:room-compiler:2.6.1")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
