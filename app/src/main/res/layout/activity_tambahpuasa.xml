@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:text="Kembali"
         android:paddingBottom="15dp"
+        android:background="@color/gray"
         android:layout_marginTop="30dp"
         android:onClick="kembali"/>
     <TextView
@@ -38,12 +39,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
+            android:background="@color/gray"
             android:textSize="30dp"
             android:layout_gravity="center"/>
         <androidx.cardview.widget.CardView
             android:id="@+id/cvdisplaypuasa"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:background="@color/white"
             app:cardCornerRadius="10dp">
             <TextView
                 android:id="@+id/displaypuasa"
@@ -59,6 +62,7 @@
             android:layout_height="wrap_content"
             android:text="+"
             android:textSize="30dp"
+            android:background="@color/gray"
             android:layout_gravity="center"/>
     </LinearLayout>
 
@@ -69,12 +73,14 @@
         android:layout_below="@id/countpuasa"
         android:text="Simpan"
         android:layout_centerHorizontal="true"
+        android:background="@color/gray"
         android:onClick="simpanpuasa"/>
     <Button
         android:id="@+id/btnhapuspuasa"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnsimpanpuasa"
+        android:background="@color/gray"
         android:text="Reset Puasa"
         android:layout_centerHorizontal="true"
         android:onClick="hapuspuasa"/>

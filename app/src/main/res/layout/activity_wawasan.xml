@@ -54,6 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:background="@color/white"
                     android:layout_below="@+id/btnhaidinfo">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -78,6 +79,7 @@
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/haidisi2"
+                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -97,6 +99,7 @@
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/haidisi3"
+                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -116,6 +119,7 @@
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/haidisi4"
+                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
@@ -145,6 +149,7 @@
                     android:id="@+id/istihadhahpengertian"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:layout_marginBottom="5dp"
                     android:layout_below="@+id/btnhaidinfo">
                     <LinearLayout
@@ -173,6 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:background="@color/white"
                     android:layout_below="@+id/istihadhahpengertian">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -191,6 +197,7 @@
                     android:id="@+id/istihadhahisi3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:layout_marginBottom="5dp"
                     android:layout_below="@+id/istihadhahisi2">
                     <LinearLayout

@@ -4,9 +4,9 @@
     <color name="pinkL">#ffe5ec</color>
     <color name="greenD">#3a5a40</color>
     <color name="greenL">#a3b18a</color>
-    <color name="gray">#E2DAD6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFDC7F</color>
+    <color name="gray">#D0DDD0</color>
 
 </resources>

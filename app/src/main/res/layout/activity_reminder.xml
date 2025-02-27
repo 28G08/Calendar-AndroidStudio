@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Kembali"
+        android:background="@color/gray"
         android:layout_marginTop="30dp"
         android:onClick="kembali"/>
     <LinearLayout
@@ -32,12 +33,14 @@
             android:layout_centerHorizontal="true"/>
         <androidx.cardview.widget.CardView
             android:id="@+id/cvinfoshalat"
+            android:background="@color/white"
             android:layout_width="250dp"
             android:layout_height="40dp"
             android:layout_centerHorizontal="true">
             <TextView
                 android:id="@+id/qshalatinfo"
                 android:layout_width="wrap_content"
+                android:background="@color/white"
                 android:layout_height="wrap_content"
                 android:text="Tidak Ada"
                 android:layout_gravity="center"/>
@@ -47,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clear info Shalat"
+            android:background="@color/gray"
             android:onClick="clearshalat"/>
         <TextView
             android:id="@+id/infoqpuasa"
@@ -59,11 +63,13 @@
             android:id="@+id/cvinfopuasa"
             android:layout_width="250dp"
             android:layout_height="40dp"
+            android:background="@color/white"
             android:layout_centerHorizontal="true">
             <TextView
                 android:id="@+id/qpuasainfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:text="Tidak Ada"
                 android:layout_gravity="center"/>
         </androidx.cardview.widget.CardView>
@@ -72,6 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Info Puasa"
+            android:background="@color/gray"
             android:onClick="EditPuasa"/>
     </LinearLayout>
     <LinearLayout
@@ -93,6 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/gray"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:text="Tambah Reminder"

@@ -13,6 +13,7 @@
         android:id="@+id/kembali"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/gray"
         android:text="Kembali"
         android:paddingBottom="15dp"
         android:layout_marginTop="30dp"
@@ -51,6 +52,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:padding="4dp"
+                android:background="@color/white"
                 android:text="QADHA' PUASA"
                 android:textColor="@color/black" />
         </androidx.cardview.widget.CardView>
@@ -68,6 +70,7 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:text="QADHA' SHALAT"
+                android:background="@color/white"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:gravity="center"/>
@@ -101,6 +104,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Simpan Reminder"
+        android:background="@color/gray"
         android:layout_below="@+id/cvcalenderview"
         android:layout_centerHorizontal="true"
         android:onClick="simpanreminder"/>

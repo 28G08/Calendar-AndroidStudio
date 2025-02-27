@@ -2,9 +2,7 @@
     <!-- Base application theme with DayNight support -->
     <style name="Base.Theme.Kalendernya" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here -->
-        <item name="colorPrimary">@color/white</item>
+
         <item name="android:fontFamily">@font/amsterdam</item>
     </style>
-
-    <style name="Theme.Kalendernya" parent="Base.Theme.Kalendernya" />
 </resources>
