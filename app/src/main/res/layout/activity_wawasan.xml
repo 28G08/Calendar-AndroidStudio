@@ -4,64 +4,212 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="15dp"
-    tools:context=".MainActivity"
+    tools:context=".Wawasan"
     android:background="@color/pinkL">
-    <Button
-        android:id="@+id/kembaliwawasan"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="Kembali"
-        android:paddingBottom="15dp"
-        android:layout_marginTop="30dp"
-        android:onClick="kembaliwawasan"/>
 
     <LinearLayout
         android:id="@+id/btnhaidinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/kembaliwawasan"
+        android:layout_marginTop="50dp"
         android:gravity="center">
         <Button
-            android:layout_width="wrap_content"
+            android:id="@+id/kembaliwawasan"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Kembali"
+            android:onClick="kembaliwawasan"/>
+        <Button
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="HAID"
-            android:textColor="@color/black"/>
+            android:onClick="haidwawasanbtn"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="ISTIHADHAH" />
+            android:text="ISTIHADHAH"
+            android:onClick="istihadhahwawasanbtn"/>
     </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/haidsection"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_below="@+id/btnhaidinfo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_below="@+id/btnhaidinfo">
+        android:layout_marginBottom="30dp">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/haidsection"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="HAID"
-                android:textSize="25dp"
-                android:gravity="center"
-                android:textColor="@color/black"/>
-            <TextView
-                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_below="@+id/btnhaidinfo"
+                android:visibility="visible">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/haidpengertian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/btnhaidinfo">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="HAID"
+                            android:textSize="25dp"
+                            android:gravity="center"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/haidwawasan_pengertian"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/haidisi2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/haidpengertian">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/haidwawasan_isi2"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/haidisi3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/haidisi2">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/haidwawasan_isi3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/haidisi4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_below="@+id/haidisi3">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/haidwawasan_isi4"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/istihadhahsection"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="makan"
-                android:textColor="@color/black"/>
+                android:orientation="vertical"
+                android:layout_below="@+id/btnhaidinfo"
+                android:visibility="gone">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/istihadhahpengertian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/btnhaidinfo">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="ISTIHADHAH"
+                            android:textSize="25dp"
+                            android:gravity="center"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/istihadhahwawasan_pengertian"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/istihadhahisi2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/istihadhahpengertian">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/istihadhahwawasan_isi2"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/istihadhahisi3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/istihadhahisi2">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/istihadhahwawasan_isi3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </ScrollView>
 
 </RelativeLayout>

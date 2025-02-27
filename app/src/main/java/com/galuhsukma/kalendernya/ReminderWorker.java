@@ -108,7 +108,7 @@ public class ReminderWorker extends Worker {
                 context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.mayoi) // Pastikan ikon ini ada
+                .setSmallIcon(R.drawable.hijab) // Pastikan ikon ini ada
                 .setContentTitle("Reminder: " + jenisReminder)
                 .setContentText("Hari ini: " + date + "\n" + keterangan)
                 .setContentIntent(pendingIntent)

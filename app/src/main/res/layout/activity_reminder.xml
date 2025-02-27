@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Kembali"
-        android:paddingBottom="15dp"
         android:layout_marginTop="30dp"
         android:onClick="kembali"/>
     <LinearLayout
@@ -28,7 +27,7 @@
             android:id="@+id/infoqshalat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="Qadha' Shalat anda saat ini adalah:"
             android:layout_centerHorizontal="true"/>
         <androidx.cardview.widget.CardView

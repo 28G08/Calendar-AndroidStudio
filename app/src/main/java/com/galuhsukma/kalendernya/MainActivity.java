@@ -1,5 +1,7 @@
 package com.galuhsukma.kalendernya;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
@@ -11,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,16 +42,12 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_tentang);
-        setContentView(R.layout.activity_wawasan);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
         }
-
-
         selectedDate = LocalDate.now();
         chosenDay = String.valueOf(selectedDate.getDayOfMonth());
         tgldatabase = monthYearFromSelectedDate()+"-"+chosenDay;
@@ -207,11 +206,13 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         startActivity(intent);
     }
 
-    public void kembaliwawasan(View view) {
-        onBackPressed();
+    public void wawasan(View view) {
+        Intent intent = new Intent(this, Wawasan.class);
+        startActivity(intent);
     }
 
-    public void kembalitentang(View view) {
-        onBackPressed();
+    public void tentang(View view) {
+        Intent intent = new Intent(this, Tentang.class);
+        startActivity(intent);
     }
 }

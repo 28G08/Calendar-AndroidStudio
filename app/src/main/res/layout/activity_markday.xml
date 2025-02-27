@@ -5,7 +5,10 @@
     android:id="@+id/markday"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
+    android:paddingBottom="30dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
     android:background="@color/pinkL"
     tools:context=".Markday">
 
@@ -15,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Kembali"
             android:paddingBottom="15dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:onClick="kembali"/>
 
     <TextView
@@ -230,7 +233,7 @@
                 android:id="@+id/cekboxshalat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sudah sholat sebelum haid"
+                android:text="belum sholat sebelum haid"
                 android:textColor="@color/black"
                 android:padding="1dp"
                 android:layout_below="@+id/centang"/>
