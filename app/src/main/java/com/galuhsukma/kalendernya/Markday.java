@@ -435,7 +435,7 @@ public class Markday extends AppCompatActivity {
         finish();
     }
 
-    public void debug(View view) {
+    /*public void debug(View view) {
         Cursor cursor = myDb.getReadableDatabase().rawQuery("SELECT * FROM " + DB_TABLE_UTAMA, null);
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -462,5 +462,5 @@ public class Markday extends AppCompatActivity {
             Log.d("Database Check puasa", "Tidak ada data di tabel.");
         }
         cursor2.close();
-    }
+    }*/
 }
