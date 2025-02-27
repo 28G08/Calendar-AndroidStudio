@@ -37,7 +37,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder>{
         // Tombol Hapus
         Button hapusButton = holder.itemView.findViewById(R.id.hapusrbtn);
         hapusButton.setOnClickListener(v -> {
-            databaseHelper.deleteReminder(reminder.getTanggalReminder()); // Menggunakan objek yang benar
+            databaseHelper.deleteReminder(reminder.getTanggalReminder(), context);
             modelReminderList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, modelReminderList.size());

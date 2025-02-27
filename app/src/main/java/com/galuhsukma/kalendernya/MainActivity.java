@@ -1,10 +1,8 @@
 package com.galuhsukma.kalendernya;
 
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,15 +19,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import java.util.concurrent.TimeUnit;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,16 +32,16 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
     String chosenDay, tgldatabase;
-    TextView infoqshalat;
-    DatabaseHelper db;
-    SQLiteDatabase sqLiteDatabase;
-    String displayokqshalat;
+    TextView infoqshalat, infoqpuasa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_tentang);
+        setContentView(R.layout.activity_wawasan);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
@@ -61,15 +55,6 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         initWidgets();
         setMonthView();
         Log.d("ini isi tgldatabase", "tanggal yang diambil"+tgldatabase);
-
-        Log.d("MainActivity", "App started, scheduling WorkManager...");
-        schedulePeriodicWork(); // **Gunakan WorkManager SAJA**
-    }
-
-    private void schedulePeriodicWork() {
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(ReminderWorker.class, 15, TimeUnit.MINUTES)
-                .build();
-        WorkManager.getInstance(this).enqueue(workRequest);
     }
 
     @Override
@@ -82,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
         monthYearText = findViewById(R.id.monthYearTV);
         infoqshalat = findViewById(R.id.infoshalat);
+        infoqpuasa = findViewById(R.id.infopuasa);
     }
 
     private void setMonthView() {
@@ -96,12 +82,23 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
 // Jika ada data, update infoqshalat
         if (cursor2.moveToFirst()) {
-            String waktushalat = cursor2.getString(cursor2.getColumnIndex("waktushalat"));
+            String waktushalat = cursor2.getString(cursor2.getColumnIndexOrThrow("waktushalat"));
             if (waktushalat != null && !waktushalat.isEmpty()) {
                 infoqshalat.setText(waktushalat);
             }
         }
         cursor2.close();
+
+        infoqpuasa.setText("0");
+
+        String query3 = "SELECT haripuasa FROM " + DB_TABLE_PUASA + " WHERE sumber = 'UTAMA';";
+        Cursor cursor3 = db.rawQuery(query3, null);
+
+        if (cursor3.moveToFirst()) {  // Perbaikan: Gunakan cursor3, bukan cursor2
+            int haripuasa = cursor3.getInt(cursor3.getColumnIndexOrThrow("haripuasa")); // Perbaikan: Gunakan getInt()
+            infoqpuasa.setText(String.valueOf(haripuasa)); // Perbaikan: Konversi int ke String sebelum setText()
+        }
+        cursor3.close();
 
         String query = "SELECT id_tgl, jenismark FROM "+DB_TABLE_UTAMA;
         Cursor cursor = db.rawQuery(query, null);
@@ -114,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         if (cursor.moveToFirst()) {
             do {
                 // Ambil nilai tanggal dan jenis
-                String tanggal = cursor.getString(cursor.getColumnIndex("id_tgl"));
-                String jenis = cursor.getString(cursor.getColumnIndex("jenismark"));
+                String tanggal = cursor.getString(cursor.getColumnIndexOrThrow("id_tgl"));
+                String jenis = cursor.getString(cursor.getColumnIndexOrThrow("jenismark"));
 
                 // Kelompokkan data berdasarkan jenis
                 if ("haid".equalsIgnoreCase(jenis)) {
@@ -208,5 +205,13 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     public void reminder(View view) {
         Intent intent = new Intent(this, Reminder.class);
         startActivity(intent);
+    }
+
+    public void kembaliwawasan(View view) {
+        onBackPressed();
+    }
+
+    public void kembalitentang(View view) {
+        onBackPressed();
     }
 }

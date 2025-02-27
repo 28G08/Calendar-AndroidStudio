@@ -145,9 +145,7 @@ public class TambahReminder extends AppCompatActivity {
         }
 
         // Pindah kembali ke ReminderActivity
-        Intent intent = new Intent(this, Reminder.class);
-        startActivity(intent);
-        finish();
+        onBackPressed();
     }
 
     @Override
@@ -157,8 +155,6 @@ public class TambahReminder extends AppCompatActivity {
     }
 
     public void kembali(View view) {
-        Intent intent = new Intent(this, Reminder.class);
-        startActivity(intent);
-        finish();
+        onBackPressed();
     }
 }

@@ -72,7 +72,8 @@
             android:id="@+id/btneditpuasa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Info Puasa"/>
+            android:text="Edit Info Puasa"
+            android:onClick="EditPuasa"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/remindersection"
@@ -94,6 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
         android:text="Tambah Reminder"
         android:onClick="tambahreminderbtn"/>
 

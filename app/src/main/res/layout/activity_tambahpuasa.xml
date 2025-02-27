@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/markday"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:background="@color/pinkL"
+    tools:context=".TambahPuasa">
+
+    <Button
+        android:id="@+id/kembali"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Kembali"
+        android:paddingBottom="15dp"
+        android:layout_marginTop="30dp"
+        android:onClick="kembali"/>
+    <TextView
+        android:id="@+id/ketcountpuasa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kembali"
+        android:text="Sisa Hutang Puasa anda saat ini adalah:"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"/>
+    <LinearLayout
+        android:id="@+id/countpuasa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ketcountpuasa"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp">
+        <Button
+            android:id="@+id/puasakurang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="30dp"
+            android:layout_gravity="center"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvdisplaypuasa"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardCornerRadius="10dp">
+            <TextView
+                android:id="@+id/displaypuasa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 hari"
+                android:textSize="20dp"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/puasatambah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="30dp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnsimpanpuasa"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/countpuasa"
+        android:text="Simpan"
+        android:layout_centerHorizontal="true"
+        android:onClick="simpanpuasa"/>
+    <Button
+        android:id="@+id/btnhapuspuasa"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnsimpanpuasa"
+        android:text="Reset Puasa"
+        android:layout_centerHorizontal="true"
+        android:onClick="hapuspuasa"/>
+
+
+</RelativeLayout>

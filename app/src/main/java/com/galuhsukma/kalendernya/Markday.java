@@ -7,6 +7,7 @@ import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -172,6 +173,11 @@ public class Markday extends AppCompatActivity {
         simpanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Pastikan DatabaseHelper telah diinisialisasi
+                if (myDb == null) {
+                    myDb = new DatabaseHelper(Markday.this);
+                }
+
                 // Ambil nilai checkbox saat tombol ditekan
                 cshalat = cbshalat.isChecked() ? 1 : 0;
                 cpuasa = cbpuasa.isChecked() ? 1 : 0;
@@ -181,27 +187,53 @@ public class Markday extends AppCompatActivity {
                     cshalat = 0;
                 }
 
-                if ("HAID".equals(jmark) && !"Tidak Ada".equals(qshalat)){
-                    Cursor cursor2 = myDb.getReadableDatabase().rawQuery(
+                if ("HAID".equals(jmark) && !"Tidak Ada".equals(qshalat)) {
+                    SQLiteDatabase db = myDb.getWritableDatabase();
+                    Cursor cursor2 = db.rawQuery(
                             "SELECT display FROM " + DB_TABLE_UTAMA + " WHERE display = 1", null);
-                    if (cursor2 != null && cursor2.moveToFirst()) {
-                        int qdisplay = cursor2.getInt(cursor2.getColumnIndex("display"));
-                        // Gunakan nilai qdisplay sesuai kebutuhan
+                    if (cursor2 != null) {
+                        if (cursor2.moveToFirst()) {
+                            int qdisplay = cursor2.getInt(cursor2.getColumnIndexOrThrow("display"));
+                            // Gunakan nilai qdisplay sesuai kebutuhan
+                        }
+                        cursor2.close();
                     }
-                    cursor2.close();
 
-                    myDb.getWritableDatabase().execSQL(
-                            "UPDATE " + DB_TABLE_UTAMA + " SET display = 0 WHERE display = 1");
+                    db.execSQL("UPDATE " + DB_TABLE_UTAMA + " SET display = 0 WHERE display = 1");
 
                     ContentValues cv = new ContentValues();
                     cv.put("display", 0);
-                    myDb.getWritableDatabase().update(DB_TABLE_UTAMA, cv, "display = ?", new String[]{"1"});
+                    db.update(DB_TABLE_UTAMA, cv, "display = ?", new String[]{"1"});
+                    db.close();
                 }
 
                 // Cek apakah `tgl` dan `jmark` sudah dipilih
                 if (tgl == null || jmark == null || jmark.isEmpty()) {
                     Toast.makeText(Markday.this, "Silakan pilih jenis mark terlebih dahulu", Toast.LENGTH_SHORT).show();
                     return;
+                }
+
+                // Jika `cpuasa` tidak dicentang (0), hapus data di tabel `puasa`
+                if (cpuasa == 0) {
+                    Log.d("CHECK", "Masuk ke if cpuasa == 0");
+                    int deleteResult = deleteDataPuasa(tgl);
+                    if (deleteResult > 0) {
+                        Log.d("puasa diapus", "berhasil");
+                    } else {
+                        Log.d("puasa gaada", "tidak apa-apa");
+                    }
+                    kurangiHariPuasaUTAMA();
+                }
+
+                if (cpuasa == 1) {
+                    Log.d("CHECK", "Masuk ke if cpuasa == 1");
+                    long insertResult = insertDataPuasa(tgl);
+                    if (insertResult > 0) {
+                        Log.d("puasa diapus", "berhasil");
+                    } else {
+                        Log.d("puasa gaada", "tidak apa-apa");
+                    }
+                    tambahHariPuasaUTAMA();
                 }
 
                 // Simpan data ke SQLite
@@ -218,12 +250,14 @@ public class Markday extends AppCompatActivity {
                         Toast.makeText(Markday.this, "Failed to Save Data", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 // Pindah kembali ke MainActivity
                 Intent intent = new Intent(Markday.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
         hapusbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,16 +281,118 @@ public class Markday extends AppCompatActivity {
         });
     }
 
+    public int deleteDataPuasa(String tgl) {
+        SQLiteDatabase db = myDb.getWritableDatabase();
+        int rowsDeleted = 0;
+        try {
+            rowsDeleted = db.delete(DB_TABLE_PUASA, "sumber = ?", new String[]{tgl});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+        return rowsDeleted;
+    }
+    public void kurangiHariPuasaUTAMA() {
+        SQLiteDatabase db = myDb.getWritableDatabase();
+
+        try {
+            // Ambil nilai `haripuasa` pada sumber = 'UTAMA'
+            Cursor cursor = db.rawQuery("SELECT haripuasa FROM " + DB_TABLE_PUASA + " WHERE sumber = 'UTAMA'", null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int currentHaripuasa = cursor.getInt(cursor.getColumnIndexOrThrow("haripuasa"));
+                cursor.close();
+
+                // Jika haripuasa > 0, maka kurangi 1
+                if (currentHaripuasa > 0) {
+                    ContentValues cv = new ContentValues();
+                    cv.put("haripuasa", currentHaripuasa - 1);
+                    db.update(DB_TABLE_PUASA, cv, "sumber = ?", new String[]{"UTAMA"});
+
+                    Log.d("UPDATE", "haripuasa pada sumber 'UTAMA' dikurangi menjadi " + (currentHaripuasa - 1));
+                } else {
+                    Log.d("UPDATE", "haripuasa pada sumber 'UTAMA' sudah 0, tidak dikurangi");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+    public long insertDataPuasa(String tgl) {
+        SQLiteDatabase db = myDb.getWritableDatabase();
+        long rowId = -1;
+
+        try {
+            // Cek apakah data dengan sumber = tgl sudah ada
+            Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + DB_TABLE_PUASA + " WHERE sumber = ?", new String[]{tgl});
+            cursor.moveToFirst();
+            int count = cursor.getInt(0);
+            cursor.close();
+
+            // Jika data belum ada, maka insert
+            if (count == 0) {
+                ContentValues values = new ContentValues();
+                values.put("sumber", tgl);
+                values.put("haripuasa", 1); // Set haripuasa menjadi 1
+
+                rowId = db.insert(DB_TABLE_PUASA, null, values);
+
+                if (rowId != -1) {
+                    Log.d("INSERT", "Data puasa dengan sumber = " + tgl + " berhasil dimasukkan");
+                } else {
+                    Log.d("INSERT", "Gagal memasukkan data puasa untuk sumber = " + tgl);
+                }
+            } else {
+                Log.d("INSERT", "Data puasa dengan sumber = " + tgl + " sudah ada, tidak perlu insert");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+
+        return rowId;
+    }
+
+    public void tambahHariPuasaUTAMA() {
+        SQLiteDatabase db = myDb.getWritableDatabase();
+
+        try {
+            // Ambil nilai `haripuasa` pada sumber = 'UTAMA'
+            Cursor cursor = db.rawQuery("SELECT haripuasa FROM " + DB_TABLE_PUASA + " WHERE sumber = 'UTAMA'", null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int currentHaripuasa = cursor.getInt(cursor.getColumnIndexOrThrow("haripuasa"));
+                cursor.close();
+
+                // Tambah haripuasa +1
+                ContentValues cv = new ContentValues();
+                cv.put("haripuasa", currentHaripuasa + 1);
+                db.update(DB_TABLE_PUASA, cv, "sumber = ?", new String[]{"UTAMA"});
+
+                Log.d("UPDATE", "haripuasa pada sumber 'UTAMA' ditambah menjadi " + (currentHaripuasa + 1));
+            } else {
+                Log.d("UPDATE", "Data puasa dengan sumber 'UTAMA' tidak ditemukan, tidak ada perubahan");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+
+
     private void fetchdata() {
         Cursor cursor = myDb.getReadableDatabase().rawQuery("select * from "+DB_TABLE_UTAMA+" where id_tgl ='"+tgl+"';", null);
         if (cursor != null && cursor.moveToFirst()) {
             // Misalnya, jika urutan kolom adalah: id_tgl, jmark, qshalat, cshalat, cpuasa
-            tgl = cursor.getString(cursor.getColumnIndex("id_tgl"));
-            jmark = cursor.getString(cursor.getColumnIndex("jenismark"));
-            qshalat = cursor.getString(cursor.getColumnIndex("waktushalat"));
-            cshalat = cursor.getInt(cursor.getColumnIndex("centangshalat"));
-            cpuasa = cursor.getInt(cursor.getColumnIndex("centangpuasa"));
-            qdisplay = cursor.getInt(cursor.getColumnIndex("display"));
+            tgl = cursor.getString(cursor.getColumnIndexOrThrow("id_tgl"));
+            jmark = cursor.getString(cursor.getColumnIndexOrThrow("jenismark"));
+            qshalat = cursor.getString(cursor.getColumnIndexOrThrow("waktushalat"));
+            cshalat = cursor.getInt(cursor.getColumnIndexOrThrow("centangshalat"));
+            cpuasa = cursor.getInt(cursor.getColumnIndexOrThrow("centangpuasa"));
+            qdisplay = cursor.getInt(cursor.getColumnIndexOrThrow("display"));
         }
         if (cursor != null) {
             cursor.close();
@@ -315,5 +451,16 @@ public class Markday extends AppCompatActivity {
             Log.d("Database Check", "Tidak ada data di tabel.");
         }
         cursor.close();
+        Cursor cursor2 = myDb.getReadableDatabase().rawQuery("SELECT * FROM " + DB_TABLE_PUASA, null);
+        if (cursor2.getCount() > 0) {
+            while (cursor2.moveToNext()) {
+                String sumber = cursor2.getString(0);
+                int hari = cursor2.getInt(1);
+                Log.d("Database Check puasa ", "sumber: " + sumber + ", Jenis: " + hari);
+            }
+        } else {
+            Log.d("Database Check puasa", "Tidak ada data di tabel.");
+        }
+        cursor2.close();
     }
 }

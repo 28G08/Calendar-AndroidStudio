@@ -1,5 +1,6 @@
 package com.galuhsukma.kalendernya;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -29,6 +30,7 @@ public class ReminderWorker extends Worker {
     public Result doWork() {
         Log.d("ReminderWorker", "doWork() called!");
         Context context = getApplicationContext();
+
         DatabaseHelper myDb = new DatabaseHelper(context);
         SQLiteDatabase db = myDb.getReadableDatabase();
 
@@ -42,7 +44,9 @@ public class ReminderWorker extends Worker {
                 do {
                     String jenisReminder = cursor.getString(cursor.getColumnIndexOrThrow("jenisreminder"));
                     Log.d("ReminderWorker", "Found reminder: " + jenisReminder);
-                    showNotification(context, todayDate, jenisReminder);
+                    // **Ambil keterangan tambahan berdasarkan jenis reminder**
+                    String keterangan = getKeterangan(context, jenisReminder);
+                    showNotification(context, todayDate, jenisReminder, keterangan);
                 } while (cursor.moveToNext());
             } else {
                 Log.d("ReminderWorker", "No reminders found for today.");
@@ -57,38 +61,73 @@ public class ReminderWorker extends Worker {
         return Result.success();
     }
 
+    private String getKeterangan(Context context, String jenisReminder) {
+        DatabaseHelper myDb = new DatabaseHelper(context);
+        SQLiteDatabase db = myDb.getReadableDatabase();
+        String keterangan = "";
+
+        if (jenisReminder.equalsIgnoreCase("QADHA' PUASA")) {
+            // Ambil total puasa dari tabel utama
+            Cursor cursor = db.rawQuery("SELECT haripuasa FROM " + DatabaseHelper.DB_TABLE_PUASA+" where sumber = 'UTAMA';", null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int totalPuasa = cursor.getInt(0);
+                keterangan = "Sisa Puasa: " + totalPuasa + " hari";
+            }
+            if (cursor != null) cursor.close();
+        } else if (jenisReminder.equalsIgnoreCase("QADHA' SHALAT")) {
+            // Ambil waktu shalat dari tabel utama yang display = 1
+            Cursor cursor = db.rawQuery("SELECT waktushalat FROM " + DatabaseHelper.DB_TABLE_UTAMA + " WHERE display = 1", null);
+            if (cursor != null && cursor.moveToFirst()) {
+                String shalat = cursor.getString(0);
+                keterangan = "Waktu Shalat: " + shalat;
+            }
+            if (cursor != null) cursor.close();
+        }
+
+        db.close();
+        return keterangan;
+    }
 
 
-    private void showNotification(Context context, String date, String jenisReminder) {
-        Log.d("ReminderWorker", "showNotification() dipanggil untuk: " + jenisReminder + " pada " + date);
+
+    public static void showNotification(Context context, String date, String jenisReminder, String keterangan) {
+        Log.d("ReminderWorker", "showNotification() dipanggil untuk: " + jenisReminder + " pada " + date + " | Keterangan: " + keterangan);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Reminder Notifications", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID, "Reminder Notifications", NotificationManager.IMPORTANCE_HIGH);
+            channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            channel.setDescription("Notifikasi pengingat jadwal");
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Debugging PendingIntent
         Intent intent = new Intent(context, Reminder.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        if (pendingIntent == null) {
-            Log.e("ReminderWorker", "PendingIntent gagal dibuat!");
-        } else {
-            Log.d("ReminderWorker", "PendingIntent berhasil dibuat!");
-        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.mayoi) // Pastikan ikon ini ada
                 .setContentTitle("Reminder: " + jenisReminder)
-                .setContentText("Jadwal untuk " + date)
+                .setContentText("Hari ini: " + date + "\n" + keterangan)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setOngoing(true) // 🔥 Membuat notifikasi tidak bisa dihapus
+                .setAutoCancel(false) // 🔥 Pastikan notifikasi tidak hilang sendiri
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_ALARM) // 🔥 Memberi tahu sistem bahwa ini penting
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);// 🔥 WAJIB untuk Android 12+
 
-        notificationManager.notify(date.hashCode(), builder.build());
-        Log.d("ReminderWorker", "Notifikasi dikirim untuk: " + jenisReminder + " pada " + date);
+        notificationManager.notify(date.hashCode(), builder.build()); // 🔥 Pakai ID tetap supaya tidak duplikasi
+        Notification notification = builder.build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            context.startForegroundService(new Intent(context, ReminderService.class));
+        }
+
     }
+
+
+
+
 
 }

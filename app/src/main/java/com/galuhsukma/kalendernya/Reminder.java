@@ -1,5 +1,6 @@
 package com.galuhsukma.kalendernya;
 
+import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_PUASA;
 import static com.galuhsukma.kalendernya.DatabaseHelper.DB_TABLE_UTAMA;
 
 import android.app.AlarmManager;
@@ -49,26 +50,20 @@ public class Reminder extends AppCompatActivity {
 
         reminderAdapter = new ReminderAdapter(this, modelReminderList);
         recyclerView.setAdapter(reminderAdapter);
-
-        scheduleDailyReminder(this);
     }
 
-    private void scheduleDailyReminder(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, ReminderReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ambildatabase();
+        recyclerView = findViewById(R.id.reminderRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Atur alarm setiap hari jam 07:00 pagi
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        myDb = new DatabaseHelper(this);
+        List<ModelReminder> modelReminderList = myDb.getAllReminders();
 
-        // Set alarm berulang setiap hari
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
-        }
+        reminderAdapter = new ReminderAdapter(this, modelReminderList);
+        recyclerView.setAdapter(reminderAdapter);
     }
 
     private void ambildatabase() {
@@ -83,17 +78,25 @@ public class Reminder extends AppCompatActivity {
 
 // Jika ada data, update infoqshalat
         if (cursor2.moveToFirst()) {
-            String waktushalat = cursor2.getString(cursor2.getColumnIndex("waktushalat"));
+            String waktushalat = cursor2.getString(cursor2.getColumnIndexOrThrow("waktushalat"));
             if (waktushalat != null && !waktushalat.isEmpty()) {
                 qadhashalat.setText(waktushalat);
             }
         }
         cursor2.close();
+        String query3 = "SELECT haripuasa FROM " + DB_TABLE_PUASA + " WHERE sumber = 'UTAMA';";
+        Cursor cursor3 = db.rawQuery(query3, null);
+
+// Jika ada data, update infoqshalat
+        if (cursor3.moveToFirst()) {  // Perbaikan: Gunakan cursor3, bukan cursor2
+            int haripuasa = cursor3.getInt(cursor3.getColumnIndexOrThrow("haripuasa")); // Perbaikan: Gunakan getInt()
+            qadhapuasa.setText(String.valueOf(haripuasa)); // Perbaikan: Konversi int ke String sebelum setText()
+        }
+        cursor3.close();
     }
 
     public void kembali(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        finish();
+        onBackPressed();
     }
 
     public void clearshalat(View view) {
@@ -108,6 +111,11 @@ public class Reminder extends AppCompatActivity {
 
     public void tambahreminderbtn(View view) {
         Intent intent = new Intent(this, TambahReminder.class);
+        startActivity(intent);
+    }
+
+    public void EditPuasa(View view) {
+        Intent intent = new Intent(this, TambahPuasa.class);
         startActivity(intent);
     }
 }

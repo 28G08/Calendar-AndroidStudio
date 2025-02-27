@@ -9,11 +9,21 @@
     android:padding="8dp"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/judul"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="KALENDER HAID DAN ISTIHADHAH"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:textSize="20dp"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardvw"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/judul">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -154,7 +164,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:text="INFORMASI QADHA' SHALAT DAN PUASA"/>
+        android:text="INFORMASI QADHA' SHALAT DAN PUASA"
+        android:textColor="@color/black"/>
     <LinearLayout
         android:id="@+id/infoqadhalabel"
         android:layout_width="match_parent"

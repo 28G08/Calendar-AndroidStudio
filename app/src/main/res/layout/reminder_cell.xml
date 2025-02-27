@@ -23,14 +23,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Judul Reminder"/>
+            android:text="Judul Reminder"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/tglreminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Tanggal Reminder"/>
+            android:text="Tanggal Reminder"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <!-- LinearLayout untuk tombol Edit dan Hapus -->
@@ -39,36 +41,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/aktifrbtn">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/editrbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:text="Edit"
             android:layout_margin="2dp"/>
 
         <Button
             android:id="@+id/hapusrbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:text="Hapus"
             android:layout_margin="2dp"/>
     </LinearLayout>
-
-    <!-- Tombol AKTIF -->
-    <Button
-        android:id="@+id/aktifrbtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:text="AKTIF"
-        android:background="@color/greenL"
-        android:layout_margin="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

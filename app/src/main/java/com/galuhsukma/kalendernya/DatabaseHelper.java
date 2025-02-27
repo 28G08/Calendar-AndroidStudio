@@ -1,5 +1,6 @@
 package com.galuhsukma.kalendernya;
 
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_TABLE_UTAMA = "AllMarkDay";
     public static final String DB_TABLE_PUASA = "AkumulasiHutangPuasa";
     public static final String DB_TABLE_REMINDER = "REMINDERQADHA";
-    public static final int DB_VER = 7;
+    public static final int DB_VER = 9;
     public static final String CREATE_TABLE_UTAMA =
             "CREATE TABLE " + DB_TABLE_UTAMA + " (" +
                     "id_tgl TEXT PRIMARY KEY, " +
@@ -36,6 +37,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_REMINDER = "CREATE TABLE " + DB_TABLE_REMINDER + " ("
             + "tgl TEXT PRIMARY KEY, "
             + "jenisreminder TEXT NOT NULL);";
+
+    // Masukkan data awal ke tabel puasa dengan haripuasa = 0 dan sumber = "utama"
+    public static final String insertDefaultData = "INSERT INTO "+DB_TABLE_PUASA+" (sumber, haripuasa) VALUES ('UTAMA', 0);";
     Context ctx;
 
     public DatabaseHelper(Context ct){
@@ -48,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_UTAMA);
         db.execSQL(CREATE_TABLE_PUASA);
         db.execSQL(CREATE_TABLE_REMINDER);
+        db.execSQL(insertDefaultData);
         Log.i("Database", "All Tables Created");
     }
 
@@ -58,12 +63,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_REMINDER);
         onCreate(db); // Buat ulang tabel
     }
-
     public Long insertData(String tgl, String jmark, String qshalat, int cshalat, int cpuasa, int qdisplay) {
         SQLiteDatabase db = this.getWritableDatabase();
         long rowId = -1;
 
         try {
+            db.beginTransaction(); // Mulai transaksi
+
+            // Insert ke tabel utama
             ContentValues values = new ContentValues();
             values.put("id_tgl", tgl);
             values.put("jenismark", jmark);
@@ -72,13 +79,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("centangpuasa", cpuasa);
             values.put("display", qdisplay);
 
-            // Insert ke tabel utama
             rowId = db.insert(DB_TABLE_UTAMA, null, values);
+
+            db.setTransactionSuccessful(); // Commit transaksi
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.close(); // Tutup database setelah insert selesai
+            db.endTransaction(); // Selesaikan transaksi (commit jika sukses, rollback jika gagal)
+            db.close(); // Tutup database
         }
 
         return rowId;
@@ -86,22 +95,92 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int updateData(String id_tgl, String jenismark, String waktushalat, int centangshalat, int centangpuasa, int qdisplay) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("jenismark", jenismark);
-        cv.put("waktushalat", waktushalat);
-        cv.put("centangshalat", centangshalat);
-        cv.put("centangpuasa", centangpuasa);
-        cv.put("display", qdisplay);
+        int rowsAffected = 0;
 
-        // update record yang memiliki id_tgl yang sesuai
-        return db.update(DB_TABLE_UTAMA, cv, "id_tgl = ?", new String[]{id_tgl});
+        try {
+            db.beginTransaction(); // Mulai transaksi
+
+            ContentValues cv = new ContentValues();
+            cv.put("jenismark", jenismark);
+            cv.put("waktushalat", waktushalat);
+            cv.put("centangshalat", centangshalat);
+            cv.put("centangpuasa", centangpuasa);
+            cv.put("display", qdisplay);
+
+            // Update tabel utama
+            rowsAffected = db.update(DB_TABLE_UTAMA, cv, "id_tgl = ?", new String[]{id_tgl});
+
+            if (rowsAffected > 0) { // Jika ada perubahan di tabel utama, update juga tabel puasa
+                ContentValues puasaValues = new ContentValues();
+                puasaValues.put("haripuasa", centangpuasa);
+
+                db.update(DB_TABLE_PUASA, puasaValues, "sumber = ?", new String[]{id_tgl});
+            }
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction(); // Commit atau rollback transaksi
+            db.close();
+        }
+
+        return rowsAffected;
     }
+
 
     public int deleteData(String id_tgl) {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Menghapus data berdasarkan id_tgl
-        return db.delete(DB_TABLE_UTAMA, "id_tgl = ?", new String[]{id_tgl});
+        int rowsDeleted = 0;
+        Cursor cursor = null;
+
+        try {
+            db.beginTransaction(); // Mulai transaksi
+
+            // Hapus dari tabel utama
+            rowsDeleted = db.delete(DB_TABLE_UTAMA, "id_tgl = ?", new String[]{id_tgl});
+
+            if (rowsDeleted > 0) { // Jika data dihapus dari tabel utama, hapus juga dari tabel puasa
+                db.delete(DB_TABLE_PUASA, "sumber = ?", new String[]{id_tgl});
+
+                // Ambil nilai `haripuasa` pada sumber = 'UTAMA'
+                cursor = db.rawQuery("SELECT haripuasa FROM " + DB_TABLE_PUASA + " WHERE sumber = 'UTAMA'", null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    int currentHaripuasa = cursor.getInt(cursor.getColumnIndexOrThrow("haripuasa"));
+
+                    // Jika haripuasa > 0, maka kurangi 1
+                    if (currentHaripuasa > 0) {
+                        ContentValues cv = new ContentValues();
+                        cv.put("haripuasa", currentHaripuasa - 1);
+                        db.update(DB_TABLE_PUASA, cv, "sumber = ?", new String[]{"UTAMA"});
+
+                        Log.d("UPDATE", "haripuasa pada sumber 'UTAMA' dikurangi menjadi " + (currentHaripuasa - 1));
+                    } else {
+                        Log.d("UPDATE", "haripuasa pada sumber 'UTAMA' sudah 0, tidak dikurangi");
+                    }
+                } else {
+                    Log.d("UPDATE", "Tidak ada data dengan sumber 'UTAMA'");
+                }
+            }
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // Tutup cursor untuk mencegah memory leak
+            }
+            db.endTransaction(); // Commit atau rollback transaksi
+            db.close(); // Tutup database setelah transaksi selesai
+        }
+
+        return rowsDeleted;
     }
+
+
+
+
     public Long insertDataReminder(String idtgl, String jenisreminder, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
         long rowId = -1;
@@ -117,9 +196,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (rowId != -1) { // <-- Sekarang bisa dicek dengan benar
                 Log.d("DatabaseHelper", "Reminder berhasil disimpan: " + idtgl + " - " + jenisreminder);
 
-                // Jalankan WorkManager langsung
-                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class).build();
-                WorkManager.getInstance(context).enqueue(workRequest);
+                // **Langsung panggil showNotification()**
+                ReminderWorker.showNotification(context, idtgl, jenisreminder, "Jangan lupa jadwalmu!");
             } else {
                 Log.e("DatabaseHelper", "Gagal menyimpan reminder: " + idtgl + " - " + jenisreminder);
             }
@@ -180,10 +258,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void deleteReminder(String tanggal) {
+    public void deleteReminder(String tanggal, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(DB_TABLE_REMINDER, "tgl = ?", new String[]{tanggal});
         db.close();
+
+        Log.d("DatabaseHelper", "Reminder dihapus: " + tanggal);
+
+        // 🔥 Hapus Notifikasi Saat Data Reminder Dihapus
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(tanggal.hashCode()); // ID harus sama dengan yang dipakai di `showNotification()`
+            Log.d("DatabaseHelper", "Notifikasi dihapus untuk reminder " + tanggal);
+        }
     }
+
 
 }

@@ -26,6 +26,10 @@
             android:exported="false"
             android:theme="@style/Theme.Kalendernya"/>
         <activity
+            android:name=".TambahPuasa"
+            android:exported="false"
+            android:theme="@style/Theme.Kalendernya"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -33,19 +37,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".ReminderService"
+            android:foregroundServiceType="systemExempted"
+            android:exported="false"/>
 
-        <!-- Ini hanya untuk menerima panggilan dari AlarmManager -->
-        <receiver android:name=".ReminderReceiver" android:exported="false"/>
-
-        <!-- Ini untuk memastikan AlarmManager tetap berjalan setelah HP restart -->
-        <receiver
-            android:name=".BootReceiver"
-            android:exported="true"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
 
     </application>
 
@@ -53,5 +49,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android:activate_vpn"/>
+
 
 </manifest>
