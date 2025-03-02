@@ -51,7 +51,7 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:padding="4dp"
+                android:layout_margin="4dp"
                 android:background="@color/white"
                 android:text="QADHA' PUASA"
                 android:textColor="@color/black" />
@@ -71,7 +71,7 @@
                 android:layout_height="50dp"
                 android:text="QADHA' SHALAT"
                 android:background="@color/white"
-                android:padding="4dp"
+                android:layout_margin="4dp"
                 android:textColor="@color/black"
                 android:gravity="center"/>
         </androidx.cardview.widget.CardView>

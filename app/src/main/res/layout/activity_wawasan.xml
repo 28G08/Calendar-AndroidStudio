@@ -59,11 +59,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
+                            android:background="@color/white"
                             android:text="HAID"
                             android:textSize="25dp"
                             android:gravity="center"
@@ -72,6 +74,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
+                            android:background="@color/white"
                             android:text="@string/haidwawasan_pengertian"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -87,11 +90,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
+                            android:background="@color/white"
                             android:text="@string/haidwawasan_isi2"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -107,11 +112,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
+                            android:background="@color/white"
                             android:text="@string/haidwawasan_isi3"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -127,11 +134,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
+                            android:background="@color/white"
                             android:text="@string/haidwawasan_isi4"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -141,6 +150,7 @@
             <LinearLayout
                 android:id="@+id/istihadhahsection"
                 android:layout_width="wrap_content"
+                android:background="@color/white"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_below="@+id/btnhaidinfo"
@@ -155,17 +165,20 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
+                            android:background="@color/white"
                             android:text="ISTIHADHAH"
                             android:textSize="25dp"
                             android:gravity="center"
                             android:textColor="@color/black"/>
                         <TextView
                             android:layout_width="match_parent"
+                            android:background="@color/white"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
                             android:text="@string/istihadhahwawasan_pengertian"
@@ -182,11 +195,13 @@
                     android:layout_below="@+id/istihadhahpengertian">
                     <LinearLayout
                         android:layout_width="match_parent"
+                        android:background="@color/white"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             android:layout_margin="10dp"
                             android:text="@string/istihadhahwawasan_isi2"
                             android:textColor="@color/black"/>
@@ -203,10 +218,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             android:layout_margin="10dp"
                             android:text="@string/istihadhahwawasan_isi3"
                             android:textColor="@color/black"/>

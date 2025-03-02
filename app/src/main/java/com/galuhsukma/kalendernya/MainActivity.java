@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private LocalDate selectedDate;
     String chosenDay, tgldatabase;
     TextView infoqshalat, infoqpuasa;
+    Button info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         monthYearText = findViewById(R.id.monthYearTV);
         infoqshalat = findViewById(R.id.infoshalat);
         infoqpuasa = findViewById(R.id.infopuasa);
+        info = findViewById(R.id.infobtn);
     }
 
     private void setMonthView() {

@@ -25,6 +25,7 @@
         android:layout_below="@id/judul"
         android:text="Silahkan Pilih Tanggal untuk ditandai"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
         android:layout_marginBottom="15dp"/>
 
     <androidx.cardview.widget.CardView
@@ -165,6 +166,7 @@
                 android:layout_gravity="center"
                 android:background="@color/gray"
                 android:onClick="markday"
+                android:clickable="true"
                 android:text="Tandai Hari" />
 
         </LinearLayout>
@@ -189,6 +191,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="INFORMASI QADHA' SHALAT DAN PUASA"
+                android:textSize="20dp"
                 android:textColor="@color/black"
                 android:gravity="center" />
 
@@ -222,6 +225,7 @@
                 android:id="@+id/infoqadha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:orientation="horizontal"
                 android:gravity="center">
 
@@ -263,7 +267,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
+                android:layout_margin="4dp"
                 android:text="WAWASAN"
+                android:clickable="true"
                 android:layout_marginTop="10dp"
                 android:background="@color/gray"
                 android:onClick="wawasan"
@@ -273,18 +279,22 @@
                 android:id="@+id/reminder"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_margin="4dp"
                 android:gravity="center"
                 android:text="REMINDER"
+                android:clickable="true"
                 android:onClick="reminder"
                 android:background="@color/gray"
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/info"
+                android:id="@+id/infobtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:text="TENTANG APLIKASI"
+                android:layout_margin="4dp"
+                android:clickable="true"
                 android:onClick="tentang"
                 android:background="@color/gray"
                 android:textSize="20sp" />

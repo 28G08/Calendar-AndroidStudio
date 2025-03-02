@@ -60,7 +60,7 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="4dp"
+                android:layout_margin="4dp"
                 android:text="HAID"
                 android:background="@color/white"
                 android:textColor="@color/black" />
@@ -79,7 +79,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="ISTIHADHAH"
-                android:padding="4dp"
+                android:layout_margin="4dp"
                 android:textColor="@color/black"
                 android:background="@color/white"
                 android:gravity="center"/>
@@ -278,6 +278,7 @@
             android:id="@+id/btnsimpan"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:text="SIMPAN"
             android:layout_centerHorizontal="true"/>
         <Button
@@ -286,6 +287,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="HAPUS"
+            android:layout_margin="4dp"
             android:layout_centerHorizontal="true"/>
         <Button
             android:background="@color/gray"
